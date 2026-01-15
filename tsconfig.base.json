@@ -14,7 +14,14 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "dashboard/Routes": [
+        "apps/dashboard/src/app/remote-entry/entry.routes.ts"
+      ],
+      "tasks/Routes": ["apps/tasks/src/app/remote-entry/entry.routes.ts"],
+      "panel/Routes": ["apps/panel/src/app/remote-entry/entry.routes.ts"],
+      "profile/Routes": ["apps/profile/src/app/remote-entry/entry.routes.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
