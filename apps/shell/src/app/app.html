@@ -1,8 +1,7 @@
 <app-welcome-dialog></app-welcome-dialog>
-<ul class="remote-menu">
-  <li><a routerLink="dashboard">Dashboard</a></li>
-  <li><a routerLink="tasks">Tasks</a></li>
-  <li><a routerLink="panel">Panel</a></li>
-  <li><a routerLink="profile">Profile</a></li>
-</ul>
-<router-outlet></router-outlet>
+<div class="flex h-screen w-full bg-background overflow-hidden">
+  <app-sidebar></app-sidebar>
+  <main class="flex-1 overflow-y-auto">
+    <router-outlet></router-outlet>
+  </main>
+</div>
