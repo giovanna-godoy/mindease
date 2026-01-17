@@ -1,8 +1,14 @@
 import { Component } from '@angular/core';
+import { UserProfileComponent } from '../presentation/components/user-profile.component';
 
 @Component({
-  imports: [],
+  standalone: true,
+  imports: [UserProfileComponent],
   selector: 'app-profile-entry',
-  template: `<p>Profile MFE</p>`,
+  template: `
+    <div>
+      <app-user-profile></app-user-profile>
+    </div>
+  `,
 })
 export class RemoteEntry {}

@@ -1,0 +1,202 @@
+<div class="space-y-4 md:space-y-6 p-4 md:p-6 max-w-4xl mx-auto">
+  <!-- Header -->
+  <div>
+    <h1 class="flex items-center gap-2 text-xl md:text-2xl font-bold">
+      <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">person</mat-icon>
+      Perfil do Usuário
+    </h1>
+    <p class="text-muted-foreground mt-1 text-sm md:text-base" [style.color]="'var(--muted-foreground)'">
+      Configure suas informações e preferências pessoais
+    </p>
+  </div>
+
+  <!-- Informações Básicas -->
+  <div class="rounded-lg p-4 md:p-6" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+    <h2 class="font-semibold mb-4">Informações Básicas</h2>
+    <div class="space-y-4">
+      <div class="space-y-2">
+        <label class="flex items-center gap-2 font-medium text-sm">
+          <mat-icon class="material-icons-rounded text-lg" [style.color]="'var(--primary)'">person</mat-icon>
+          Nome
+        </label>
+        <input
+          [(ngModel)]="profile.name"
+          type="text"
+          placeholder="Seu nome completo"
+          class="w-full px-3 py-2 rounded-lg border"
+          [style.borderColor]="'var(--border)'"
+          [style.backgroundColor]="'var(--input-background)'"
+        />
+      </div>
+
+      <div class="space-y-2">
+        <label class="flex items-center gap-2 font-medium text-sm">
+          <mat-icon class="material-icons-rounded text-lg" [style.color]="'var(--primary)'">mail</mat-icon>
+          E-mail
+        </label>
+        <input
+          [(ngModel)]="profile.email"
+          type="email"
+          placeholder="seu.email@fiap.com.br"
+          class="w-full px-3 py-2 rounded-lg border"
+          [style.borderColor]="'var(--border)'"
+          [style.backgroundColor]="'var(--input-background)'"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Rotina de Estudo -->
+  <div class="rounded-lg p-4 md:p-6" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+    <h2 class="flex items-center gap-2 font-semibold mb-4">
+      <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">schedule</mat-icon>
+      Rotina de Estudo
+    </h2>
+    <p class="text-sm mb-4" [style.color]="'var(--muted-foreground)'">
+      Configure seus horários e durações preferidos
+    </p>
+
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div class="space-y-2">
+        <label class="font-medium text-sm">Horário de Início Preferido</label>
+        <input
+          [(ngModel)]="profile.studyRoutine.preferredStartTime"
+          type="time"
+          class="w-full px-3 py-2 rounded-lg border"
+          [style.borderColor]="'var(--border)'"
+          [style.backgroundColor]="'var(--input-background)'"
+        />
+      </div>
+
+      <div class="space-y-2">
+        <label class="font-medium text-sm">Horário de Término Preferido</label>
+        <input
+          [(ngModel)]="profile.studyRoutine.preferredEndTime"
+          type="time"
+          class="w-full px-3 py-2 rounded-lg border"
+          [style.borderColor]="'var(--border)'"
+          [style.backgroundColor]="'var(--input-background)'"
+        />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-2">
+        <label class="flex items-center gap-2 font-medium text-sm">
+          <mat-icon class="material-icons-rounded text-lg" [style.color]="'var(--primary)'">psychology</mat-icon>
+          Duração do Foco (minutos)
+        </label>
+        <input
+          [(ngModel)]="profile.studyRoutine.focusDuration"
+          type="number"
+          min="5"
+          max="60"
+          class="w-full px-3 py-2 rounded-lg border"
+          [style.borderColor]="'var(--border)'"
+          [style.backgroundColor]="'var(--input-background)'"
+        />
+        <p class="text-xs" [style.color]="'var(--muted-foreground)'">
+          Recomendado: 25 minutos (Técnica Pomodoro)
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <label class="flex items-center gap-2 font-medium text-sm">
+          <mat-icon class="material-icons-rounded text-lg" [style.color]="'var(--primary)'">local_cafe</mat-icon>
+          Duração da Pausa (minutos)
+        </label>
+        <input
+          [(ngModel)]="profile.studyRoutine.breakDuration"
+          type="number"
+          min="1"
+          max="30"
+          class="w-full px-3 py-2 rounded-lg border"
+          [style.borderColor]="'var(--border)'"
+          [style.backgroundColor]="'var(--input-background)'"
+        />
+        <p class="text-xs" [style.color]="'var(--muted-foreground)'">
+          Recomendado: 5 minutos
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Necessidades Específicas -->
+  <div class="rounded-lg p-4 md:p-6" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+    <h2 class="font-semibold mb-4">Necessidades Específicas</h2>
+    <p class="text-sm mb-4" [style.color]="'var(--muted-foreground)'">
+      Selecione suas necessidades para personalizar a experiência
+    </p>
+
+    <!-- Quick selection -->
+    <div class="mb-6">
+      <label class="font-medium text-sm mb-2 block">Seleção Rápida</label>
+      <div class="flex flex-wrap gap-2">
+        <button
+          *ngFor="let need of commonNeeds"
+          (click)="toggleNeed(need)"
+          class="px-3 py-1 rounded-full text-sm transition-colors border"
+          [style.backgroundColor]="profile.specificNeeds.includes(need) ? 'var(--primary)' : 'transparent'"
+          [style.color]="profile.specificNeeds.includes(need) ? 'var(--primary-foreground)' : 'var(--card-foreground)'"
+          [style.borderColor]="profile.specificNeeds.includes(need) ? 'var(--primary)' : 'var(--border)'"
+        >
+          {{ need }}
+          <span *ngIf="profile.specificNeeds.includes(need)" class="ml-1">×</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Custom need -->
+    <div class="space-y-2 mb-6">
+      <label class="font-medium text-sm">Adicionar Necessidade Personalizada</label>
+      <div class="flex gap-2">
+        <input
+          [(ngModel)]="newNeed"
+          type="text"
+          placeholder="Ex: Sensibilidade a ruídos..."
+          class="flex-1 px-3 py-2 rounded-lg border"
+          [style.borderColor]="'var(--border)'"
+          [style.backgroundColor]="'var(--input-background)'"
+          (keyup.enter)="addCustomNeed()"
+        />
+        <button
+          (click)="addCustomNeed()"
+          class="px-3 py-2 rounded-lg border flex items-center gap-1"
+          [style.borderColor]="'var(--border)'"
+          [style.color]="'var(--card-foreground)'"
+        >
+          <mat-icon class="material-icons-rounded">add</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Selected needs -->
+    <div *ngIf="profile.specificNeeds.length > 0" class="space-y-2">
+      <label class="font-medium text-sm">Necessidades Selecionadas</label>
+      <div class="flex flex-wrap gap-2">
+        <div
+          *ngFor="let need of profile.specificNeeds"
+          class="px-3 py-1 rounded-full text-sm flex items-center gap-1"
+          [style.backgroundColor]="'var(--secondary)'"
+          [style.color]="'var(--secondary-foreground)'"
+        >
+          {{ need }}
+          <button (click)="removeNeed(need)" class="hover:opacity-70">×</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Button -->
+  <div class="flex justify-end">
+    <button
+      (click)="saveProfile()"
+      class="flex items-center gap-2 px-6 py-2.5 rounded-lg font-medium"
+      [style.backgroundColor]="'var(--primary)'"
+      [style.color]="'var(--primary-foreground)'"
+    >
+      <mat-icon class="material-icons-rounded">save</mat-icon>
+      Salvar Configurações
+    </button>
+  </div>
+</div>
