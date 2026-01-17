@@ -1,0 +1,132 @@
+:root {
+  --font-size: 16px;
+  
+  /* Paleta MindEase - cores suaves e acessíveis */
+  --color-lilac-light: #E1D4F0;
+  --color-pink-light: #F0D4E8;
+  --color-turquoise-light: #8FD8D8;
+  --color-blue-medium: #6CB4E8;
+  --color-purple: #8B7DB8;
+  --color-blue-dark: #5D84B8;
+  
+  --background: #FAFBFD;
+  --foreground: #2A2D3E;
+  --card: #ffffff;
+  --card-foreground: #2A2D3E;
+  --popover: #ffffff;
+  --popover-foreground: #2A2D3E;
+  --primary: #8B7DB8;
+  --primary-foreground: #ffffff;
+  --secondary: #E1D4F0;
+  --secondary-foreground: #2A2D3E;
+  --muted: #F0ECFA;
+  --muted-foreground: #6B7280;
+  --accent: #8FD8D8;
+  --accent-foreground: #2A2D3E;
+  --destructive: #EF4444;
+  --destructive-foreground: #ffffff;
+  --border: rgba(139, 125, 184, 0.2);
+  --input: transparent;
+  --input-background: #F9FAFB;
+  --switch-background: #D1D5DB;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #8B7DB8;
+  --chart-1: #8B7DB8;
+  --chart-2: #6CB4E8;
+  --chart-3: #8FD8D8;
+  --chart-4: #F0D4E8;
+  --chart-5: #E1D4F0;
+  --radius: 0.75rem;
+  
+  /* Variáveis de acessibilidade cognitiva */
+  --spacing-multiplier: 1;
+  --contrast-level: 1;
+  --animation-speed: 1;
+}
+
+/* Modo de alto contraste */
+.high-contrast {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --primary: #5D3A8B;
+  --primary-foreground: #ffffff;
+  --secondary: #C8B8E0;
+  --border: rgba(0, 0, 0, 0.4);
+  --contrast-level: 2;
+}
+
+/* Modo de contraste muito alto */
+.very-high-contrast {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --primary: #3D1A6B;
+  --primary-foreground: #ffffff;
+  --secondary: #A898D0;
+  --border: rgba(0, 0, 0, 0.6);
+  --muted: #E8E8E8;
+  --muted-foreground: #1A1A1A;
+  --contrast-level: 3;
+}
+
+/* Espaçamento ampliado */
+.wide-spacing {
+  --spacing-multiplier: 1.5;
+}
+
+.extra-wide-spacing {
+  --spacing-multiplier: 2;
+}
+
+/* Tamanhos de fonte aumentados */
+.large-text {
+  --font-size: 18px;
+}
+
+.extra-large-text {
+  --font-size: 20px;
+}
+
+/* Modo de foco - reduz distrações */
+.focus-mode {
+  --muted: #F9FAFB;
+  --border: rgba(139, 125, 184, 0.1);
+}
+
+/* Animações reduzidas */
+.reduced-motion {
+  --animation-speed: 0.01;
+}
+
+.no-animations {
+  --animation-speed: 0;
+}
+
+* {
+  border-color: var(--border);
+  outline-color: var(--ring);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+h1, h2, h3, h4 {
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+label, button, input {
+  font-weight: var(--font-weight-normal);
+  line-height: 1.5;
+}
