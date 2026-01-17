@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { NxWelcome } from './nx-welcome';
 
 @Component({
-  imports: [NxWelcome],
+  imports: [],
   selector: 'app-tasks-entry',
-  template: `<app-nx-welcome></app-nx-welcome>`,
+  template: `<p>Tasks MFE</p>`,
 })
 export class RemoteEntry {}
