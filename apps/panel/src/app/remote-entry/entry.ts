@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { CognitivePanelComponent } from '../presentation/components/cognitive-panel.component';
 
 @Component({
-  imports: [],
+  imports: [CognitivePanelComponent],
   selector: 'app-panel-entry',
-  template: `<p>Panel MFE</p>`,
+  template: `<app-cognitive-panel></app-cognitive-panel>`,
 })
 export class RemoteEntry {}

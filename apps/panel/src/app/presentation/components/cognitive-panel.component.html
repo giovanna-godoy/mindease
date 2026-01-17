@@ -1,0 +1,227 @@
+<div class="space-y-4 md:space-y-6 p-4 md:p-6 max-w-4xl mx-auto">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="flex items-center gap-2 text-xl md:text-2xl font-bold">
+        <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">settings</mat-icon>
+        Painel Cognitivo
+      </h1>
+      <p class="text-muted-foreground mt-1 text-sm md:text-base" [style.color]="'var(--muted-foreground)'">
+        Personalize sua experiência para melhor foco e conforto
+      </p>
+    </div>
+    <button
+      (click)="resetSettings()"
+      class="flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors w-full sm:w-auto"
+      [style.borderColor]="'var(--border)'"
+      [style.color]="'var(--card-foreground)'"
+    >
+      <mat-icon class="material-icons-rounded text-lg">restart_alt</mat-icon>
+      Restaurar Padrões
+    </button>
+  </div>
+
+  <!-- Contraste -->
+  <div class="rounded-lg p-4 md:p-6" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+    <h2 class="flex items-center gap-2 font-semibold mb-2">
+      <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">visibility</mat-icon>
+      Nível de Contraste
+    </h2>
+    <p class="text-sm mb-4" [style.color]="'var(--muted-foreground)'">
+      Ajuste o contraste visual para melhor legibilidade
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <button
+        *ngFor="let option of contrastOptions"
+        (click)="setContrast(option.value)"
+        class="p-4 rounded-lg border-2 transition-all text-left"
+        [style.borderColor]="settings.contrastLevel === option.value ? 'var(--primary)' : 'var(--border)'"
+        [style.backgroundColor]="settings.contrastLevel === option.value ? 'var(--secondary)' : 'transparent'"
+      >
+        <div class="font-medium">{{ option.label }}</div>
+        <div class="text-sm mt-1" [style.color]="'var(--muted-foreground)'">
+          {{ option.description }}
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Espaçamento -->
+  <div class="rounded-lg p-4 md:p-6" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+    <h2 class="flex items-center gap-2 font-semibold mb-2">
+      <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">unfold_more</mat-icon>
+      Espaçamento
+    </h2>
+    <p class="text-sm mb-4" [style.color]="'var(--muted-foreground)'">
+      Controle o espaço entre os elementos da interface
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <button
+        *ngFor="let option of spacingOptions"
+        (click)="setSpacing(option.value)"
+        class="p-4 rounded-lg border-2 transition-all text-left"
+        [style.borderColor]="settings.spacingLevel === option.value ? 'var(--primary)' : 'var(--border)'"
+        [style.backgroundColor]="settings.spacingLevel === option.value ? 'var(--secondary)' : 'transparent'"
+      >
+        <div class="font-medium">{{ option.label }}</div>
+        <div class="text-sm mt-1" [style.color]="'var(--muted-foreground)'">
+          {{ option.description }}
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tamanho da Fonte -->
+  <div class="rounded-lg p-4 md:p-6" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+    <h2 class="flex items-center gap-2 font-semibold mb-2">
+      <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">text_fields</mat-icon>
+      Tamanho da Fonte
+    </h2>
+    <p class="text-sm mb-4" [style.color]="'var(--muted-foreground)'">
+      Aumente o tamanho do texto para melhor leitura
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <button
+        *ngFor="let option of fontSizeOptions"
+        (click)="setFontSize(option.value)"
+        class="p-4 rounded-lg border-2 transition-all text-left"
+        [style.borderColor]="settings.fontSize === option.value ? 'var(--primary)' : 'var(--border)'"
+        [style.backgroundColor]="settings.fontSize === option.value ? 'var(--secondary)' : 'transparent'"
+      >
+        <div class="font-medium">{{ option.label }}</div>
+        <div class="text-sm mt-1" [style.color]="'var(--muted-foreground)'">
+          {{ option.description }}
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Complexidade da Interface -->
+  <div class="rounded-lg p-4 md:p-6" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+    <h2 class="flex items-center gap-2 font-semibold mb-2">
+      <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">dashboard</mat-icon>
+      Complexidade da Interface
+    </h2>
+    <p class="text-sm mb-4" [style.color]="'var(--muted-foreground)'">
+      Escolha quanto detalhe você deseja ver
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <button
+        *ngFor="let option of complexityOptions"
+        (click)="setComplexity(option.value)"
+        class="p-4 rounded-lg border-2 transition-all text-left"
+        [style.borderColor]="settings.complexityLevel === option.value ? 'var(--primary)' : 'var(--border)'"
+        [style.backgroundColor]="settings.complexityLevel === option.value ? 'var(--secondary)' : 'transparent'"
+      >
+        <div class="font-medium">{{ option.label }}</div>
+        <div class="text-sm mt-1" [style.color]="'var(--muted-foreground)'">
+          {{ option.description }}
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Animações -->
+  <div class="rounded-lg p-4 md:p-6" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+    <h2 class="flex items-center gap-2 font-semibold mb-2">
+      <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">flash_on</mat-icon>
+      Animações
+    </h2>
+    <p class="text-sm mb-4" [style.color]="'var(--muted-foreground)'">
+      Controle o movimento na interface
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <button
+        *ngFor="let option of animationOptions"
+        (click)="setAnimation(option.value)"
+        class="p-4 rounded-lg border-2 transition-all text-left"
+        [style.borderColor]="settings.animationLevel === option.value ? 'var(--primary)' : 'var(--border)'"
+        [style.backgroundColor]="settings.animationLevel === option.value ? 'var(--secondary)' : 'transparent'"
+      >
+        <div class="font-medium">{{ option.label }}</div>
+        <div class="text-sm mt-1" [style.color]="'var(--muted-foreground)'">
+          {{ option.description }}
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Configurações Adicionais -->
+  <div class="rounded-lg p-4 md:p-6" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+    <h2 class="font-semibold mb-4">Configurações Adicionais</h2>
+    <p class="text-sm mb-6" [style.color]="'var(--muted-foreground)'">
+      Ative ou desative recursos específicos
+    </p>
+
+    <div class="space-y-6">
+      <!-- Focus Mode -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">center_focus_strong</mat-icon>
+          <div>
+            <div class="font-medium">Modo de Foco</div>
+            <p class="text-sm" [style.color]="'var(--muted-foreground)'">
+              Reduz distrações visuais e destaca o conteúdo principal
+            </p>
+          </div>
+        </div>
+        <button
+          (click)="toggleFocusMode()"
+          class="w-12 h-6 rounded-full transition-colors"
+          [style.backgroundColor]="settings.focusMode ? 'var(--primary)' : 'var(--muted)'"
+        >
+          <div
+            class="w-5 h-5 rounded-full bg-white transition-transform"
+            [style.transform]="settings.focusMode ? 'translateX(24px)' : 'translateX(2px)'"
+          ></div>
+        </button>
+      </div>
+
+      <!-- Cognitive Alerts -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">notifications</mat-icon>
+          <div>
+            <div class="font-medium">Alertas Cognitivos</div>
+            <p class="text-sm" [style.color]="'var(--muted-foreground)'">
+              Receba avisos sobre tempo de foco e pausas recomendadas
+            </p>
+          </div>
+        </div>
+        <button
+          (click)="toggleCognitiveAlerts()"
+          class="w-12 h-6 rounded-full transition-colors"
+          [style.backgroundColor]="settings.enableCognitiveAlerts ? 'var(--primary)' : 'var(--muted)'"
+        >
+          <div
+            class="w-5 h-5 rounded-full bg-white transition-transform"
+            [style.transform]="settings.enableCognitiveAlerts ? 'translateX(24px)' : 'translateX(2px)'"
+          ></div>
+        </button>
+      </div>
+
+      <!-- Detailed View -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">dashboard</mat-icon>
+          <div>
+            <div class="font-medium">Visualização Detalhada</div>
+            <p class="text-sm" [style.color]="'var(--muted-foreground)'">
+              Mostra informações extras e estatísticas
+            </p>
+          </div>
+        </div>
+        <button
+          (click)="toggleDetailedView()"
+          class="w-12 h-6 rounded-full transition-colors"
+          [style.backgroundColor]="settings.showDetailedView ? 'var(--primary)' : 'var(--muted)'"
+        >
+          <div
+            class="w-5 h-5 rounded-full bg-white transition-transform"
+            [style.transform]="settings.showDetailedView ? 'translateX(24px)' : 'translateX(2px)'"
+          ></div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
