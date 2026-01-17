@@ -1,0 +1,82 @@
+<div class="rounded-lg p-6" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+  <div class="mb-6">
+    <h3 class="flex items-center gap-2 font-semibold text-lg mb-2">
+      <mat-icon class="material-icons-rounded" [style.color]="mode === 'focus' ? 'var(--primary)' : 'var(--accent)'">
+        {{ mode === 'focus' ? 'psychology' : 'local_cafe' }}
+      </mat-icon>
+      {{ mode === 'focus' ? 'Timer de Foco' : 'Timer de Pausa' }}
+    </h3>
+    <p class="text-sm" [style.color]="'var(--muted-foreground)'">
+      {{ mode === 'focus' ? 'Mantenha o foco na sua tarefa atual' : 'Relaxe e recarregue suas energias' }}
+    </p>
+  </div>
+
+  <!-- Timer Display -->
+  <div class="text-center mb-6">
+    <div class="text-6xl font-bold mb-4" [style.color]="mode === 'focus' ? 'var(--primary)' : 'var(--accent)'">
+      {{ formatTime(timeLeft) }}
+    </div>
+    <div class="w-full bg-gray-200 rounded-full h-2">
+      <div class="h-2 rounded-full transition-all" [style.backgroundColor]="mode === 'focus' ? 'var(--primary)' : 'var(--accent)'" [style.width.%]="progress"></div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="flex gap-3 justify-center mb-6">
+    <button
+      (click)="toggleTimer()"
+      class="flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-lg"
+      [style.backgroundColor]="'var(--primary)'"
+      [style.color]="'var(--primary-foreground)'"
+    >
+      <mat-icon class="material-icons-rounded">{{ isActive ? 'pause' : 'play_arrow' }}</mat-icon>
+      {{ isActive ? 'Pausar' : 'Iniciar' }}
+    </button>
+    <button
+      (click)="resetTimer()"
+      class="flex items-center gap-2 px-6 py-3 rounded-lg border font-medium text-lg"
+      [style.borderColor]="'var(--border)'"
+      [style.color]="'var(--card-foreground)'"
+    >
+      <mat-icon class="material-icons-rounded">restart_alt</mat-icon>
+      Reiniciar
+    </button>
+  </div>
+
+  <!-- Mode Switcher -->
+  <div class="grid grid-cols-2 gap-3 mb-6">
+    <button
+      (click)="switchMode('focus')"
+      class="flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium"
+      [style.backgroundColor]="mode === 'focus' ? 'var(--primary)' : 'transparent'"
+      [style.color]="mode === 'focus' ? 'var(--primary-foreground)' : 'var(--card-foreground)'"
+      [style.borderColor]="mode === 'focus' ? 'var(--primary)' : 'var(--border)'"
+      style="border: 1px solid"
+    >
+      <mat-icon class="material-icons-rounded">psychology</mat-icon>
+      Foco (25min)
+    </button>
+    <button
+      (click)="switchMode('break')"
+      class="flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium"
+      [style.backgroundColor]="mode === 'break' ? 'var(--primary)' : 'transparent'"
+      [style.color]="mode === 'break' ? 'var(--primary-foreground)' : 'var(--card-foreground)'"
+      [style.borderColor]="mode === 'break' ? 'var(--primary)' : 'var(--border)'"
+      style="border: 1px solid"
+    >
+      <mat-icon class="material-icons-rounded">local_cafe</mat-icon>
+      Pausa (5min)
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="text-center p-4 rounded-lg" [style.backgroundColor]="'var(--muted)'">
+    <div class="text-sm" [style.color]="'var(--muted-foreground)'">Ciclos completos hoje</div>
+    <div class="text-2xl font-bold mt-1" [style.color]="'var(--primary)'">{{ completedCycles }}</div>
+  </div>
+
+  <!-- Focus Alert -->
+  <div *ngIf="isActive && mode === 'focus'" class="text-sm text-center p-3 rounded-lg mt-4" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
+    💡 Mantenha-se focado em uma única tarefa. Evite distrações!
+  </div>
+</div>

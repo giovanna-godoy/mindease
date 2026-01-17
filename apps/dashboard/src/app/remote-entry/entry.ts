@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { DashboardComponent } from '../presentation/components/dashboard.component';
 
 @Component({
-  imports: [],
+  standalone: true,
+  imports: [DashboardComponent],
   selector: 'app-dashboard-entry',
-  template: `<p>Dash MFE</p>`,
+  template: `<app-dashboard></app-dashboard>`,
 })
 export class RemoteEntry {}

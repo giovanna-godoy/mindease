@@ -1,0 +1,115 @@
+<div class="p-4 md:p-6 space-y-4 md:space-y-6 max-w-7xl mx-auto">
+  <!-- Welcome Section -->
+  <div>
+    <h1 class="flex items-center gap-2 text-xl md:text-2xl font-bold">
+      <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">psychology</mat-icon>
+      Olá, Estudante!
+    </h1>
+    <p class="text-muted-foreground mt-1 text-sm md:text-base" [style.color]="'var(--muted-foreground)'">
+      Bem-vindo à sua área de trabalho MindEase
+    </p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+    <app-stats-card
+      title="Total de Tarefas"
+      [value]="5"
+      icon="list_alt"
+      description="2 a fazer · 2 em progresso"
+    ></app-stats-card>
+
+    <app-stats-card
+      title="Concluídas"
+      [value]="1"
+      icon="check_circle"
+      valueColor="#10B981"
+      description="20% de conclusão"
+      [showProgress]="true"
+      [progressValue]="20"
+    ></app-stats-card>
+
+    <app-stats-card
+      title="Alta Prioridade"
+      [value]="2"
+      icon="priority_high"
+      valueColor="#EF4444"
+      description="Tarefas que requerem atenção urgente"
+    ></app-stats-card>
+
+    <app-stats-card
+      title="Tarefas de Hoje"
+      [value]="0"
+      icon="today"
+      valueColor="#3B82F6"
+      description="Com prazo para hoje"
+    ></app-stats-card>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Timer -->
+    <div class="lg:col-span-1">
+      <app-pomodoro-timer></app-pomodoro-timer>
+    </div>
+
+    <!-- Quick Info -->
+    <div class="lg:col-span-2 space-y-4">
+      <!-- Tips Card -->
+      <div class="rounded-lg p-4" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+        <div class="mb-4">
+          <h3 class="flex items-center gap-2 font-semibold">
+            <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">trending_up</mat-icon>
+            Dicas para Foco
+          </h3>
+        </div>
+        <ul class="space-y-2 text-sm">
+          <li class="flex items-start gap-2">
+            <span [style.color]="'var(--primary)'">•</span>
+            <span>Divida tarefas grandes em etapas menores e mais gerenciáveis</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span [style.color]="'var(--primary)'">•</span>
+            <span>Use o timer Pomodoro para manter sessões de foco efetivas</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span [style.color]="'var(--primary)'">•</span>
+            <span>Faça pausas regulares para evitar sobrecarga cognitiva</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span [style.color]="'var(--primary)'">•</span>
+            <span>Ative o Modo de Foco para reduzir distrações visuais</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Upcoming Tasks -->
+      <div class="rounded-lg p-4" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+        <div class="mb-4">
+          <h3 class="flex items-center gap-2 font-semibold">
+            <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">schedule</mat-icon>
+            Próximas Tarefas
+          </h3>
+          <p class="text-sm" [style.color]="'var(--muted-foreground)'">
+            Tarefas que precisam da sua atenção
+          </p>
+        </div>
+        <div class="space-y-3">
+          <div *ngFor="let task of upcomingTasks" class="flex items-start gap-3 p-3 rounded-lg" [style.backgroundColor]="'var(--muted)'">
+            <div class="flex-1 min-w-0">
+              <div class="font-medium truncate">{{ task.title }}</div>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-xs px-2 py-0.5 rounded font-medium" [style.backgroundColor]="task.priority === 'Alta' ? '#EF4444' : '#F59E0B'" [style.color]="'white'">
+                  {{ task.priority }}
+                </span>
+                <span class="text-xs" [style.color]="'var(--muted-foreground)'">
+                  {{ task.status }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
