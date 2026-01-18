@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FilterPipe } from '../pipes/filter.pipe';
+import { TaskFormDialogComponent } from './task-form-dialog.component';
 
 interface Subtask {
   id: string;
@@ -23,7 +24,7 @@ interface Task {
 @Component({
   selector: 'app-tasks-page',
   standalone: true,
-  imports: [CommonModule, MatIconModule, FilterPipe],
+  imports: [CommonModule, MatIconModule, FilterPipe, TaskFormDialogComponent],
   templateUrl: './tasks-page.component.html',
 })
 export class TasksPageComponent {
@@ -95,8 +96,40 @@ export class TasksPageComponent {
     },
   ];
 
+  isDialogOpen = false;
+  dialogTask: Task | null = null;
+  dialogDefaultStatus: 'todo' | 'in_progress' | 'done' = 'todo';
+
   openNewTaskDialog(status?: 'todo' | 'in_progress' | 'done'): void {
-    console.log('Open new task dialog for status:', status);
+    this.dialogTask = null;
+    this.dialogDefaultStatus = status || 'todo';
+    this.isDialogOpen = true;
+  }
+
+  openEditTaskDialog(task: Task): void {
+    this.dialogTask = task;
+    this.isDialogOpen = true;
+  }
+
+  onDialogOpenChange(isOpen: boolean): void {
+    this.isDialogOpen = isOpen;
+  }
+
+  onTaskSubmit(taskData: any): void {
+    if (this.dialogTask) {
+      // Update existing task
+      const index = this.tasks.findIndex(t => t.id === this.dialogTask!.id);
+      if (index !== -1) {
+        this.tasks[index] = { ...this.dialogTask, ...taskData };
+      }
+    } else {
+      // Create new task
+      const newTask: Task = {
+        id: Date.now().toString(),
+        ...taskData
+      };
+      this.tasks.push(newTask);
+    }
   }
 
   getPriorityColor(priority: string): string {

@@ -156,3 +156,12 @@
     </div>
   </div>
 </div>
+
+<!-- Task Form Dialog -->
+<app-task-form-dialog
+  [isOpen]="isDialogOpen"
+  [task]="dialogTask"
+  [defaultStatus]="dialogDefaultStatus"
+  (openChange)="onDialogOpenChange($event)"
+  (taskSubmit)="onTaskSubmit($event)"
+></app-task-form-dialog>

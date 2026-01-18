@@ -1,0 +1,131 @@
+<div class="dialog-overlay" *ngIf="isOpen" (click)="onOverlayClick($event)">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h2 class="dialog-title">{{ task ? 'Editar Tarefa' : 'Nova Tarefa' }}</h2>
+      <p class="dialog-description">
+        {{ task ? 'Atualize as informações da sua tarefa' : 'Adicione uma nova tarefa ao seu organizador' }}
+      </p>
+      <button type="button" class="dialog-close" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="dialog-form">
+      <!-- Title -->
+      <div class="form-group">
+        <label for="title">Título *</label>
+        <input
+          id="title"
+          type="text"
+          [(ngModel)]="formData.title"
+          name="title"
+          placeholder="Ex: Estudar React para a prova"
+          required
+          class="form-input"
+        />
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description">Descrição</label>
+        <textarea
+          id="description"
+          [(ngModel)]="formData.description"
+          name="description"
+          placeholder="Descreva os detalhes da tarefa..."
+          rows="3"
+          class="form-textarea"
+        ></textarea>
+      </div>
+
+      <!-- Status and Priority -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select id="status" [(ngModel)]="formData.status" name="status" class="form-select">
+            <option value="todo">A Fazer</option>
+            <option value="in_progress">Em Progresso</option>
+            <option value="done">Concluído</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="priority">Prioridade</label>
+          <select id="priority" [(ngModel)]="formData.priority" name="priority" class="form-select">
+            <option value="Baixa">Baixa</option>
+            <option value="Média">Média</option>
+            <option value="Alta">Alta</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Estimated Time -->
+      <div class="form-group">
+        <label for="estimatedTime">Tempo Estimado (minutos)</label>
+        <input
+          id="estimatedTime"
+          type="number"
+          [(ngModel)]="formData.estimatedTime"
+          name="estimatedTime"
+          placeholder="Ex: 60"
+          min="0"
+          class="form-input"
+        />
+      </div>
+
+      <!-- Tags -->
+      <div class="form-group">
+        <label>Tags</label>
+        <div class="tag-input-container">
+          <input
+            type="text"
+            [(ngModel)]="newTag"
+            name="newTag"
+            placeholder="Adicionar tag..."
+            (keydown.enter)="addTag($event)"
+            class="form-input"
+          />
+          <button type="button" (click)="addTag()" class="tag-add-btn">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+        <div class="tags-container" *ngIf="formData.tags.length > 0">
+          <div class="tag" *ngFor="let tag of formData.tags">
+            {{ tag }}
+            <button type="button" (click)="removeTag(tag)" class="tag-remove">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subtasks - only for editing existing tasks -->
+      <div class="form-group" *ngIf="task">
+        <label>Subtarefas</label>
+        <div class="tag-input-container">
+          <input
+            type="text"
+            [(ngModel)]="newSubtask"
+            name="newSubtask"
+            placeholder="Adicionar subtarefa..."
+            (keydown.enter)="addSubtask($event)"
+            class="form-input"
+          />
+          <button type="button" (click)="addSubtask()" class="tag-add-btn">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="dialog-actions">
+        <button type="button" class="btn-secondary" (click)="closeDialog()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primary">
+          {{ task ? 'Atualizar' : 'Criar' }} Tarefa
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
