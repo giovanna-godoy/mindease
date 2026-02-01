@@ -1,0 +1,53 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h2>Entrar no MindEase</h2>
+      <p>Acesse sua conta para sincronizar seus dados</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          required
+          class="form-input"
+          placeholder="seu.email@exemplo.com"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input
+          id="password"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          required
+          class="form-input"
+          placeholder="Sua senha"
+        />
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="isLoading">
+        <span *ngIf="isLoading">Entrando...</span>
+        <span *ngIf="!isLoading">Entrar</span>
+      </button>
+
+      <div class="login-divider">
+        <span>ou</span>
+      </div>
+
+      <button type="button" (click)="toggleMode()" class="btn-secondary">
+        {{ isLoginMode ? 'Criar nova conta' : 'Já tenho conta' }}
+      </button>
+    </form>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>
+</div>

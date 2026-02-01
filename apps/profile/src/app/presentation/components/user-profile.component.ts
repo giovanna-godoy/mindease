@@ -1,7 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+
+interface AccessibilitySettings {
+  focusMode: boolean;
+  contrastLevel: 'normal' | 'high' | 'very-high';
+  spacingLevel: 'normal' | 'wide' | 'extra-wide';
+  fontSize: 'normal' | 'large' | 'extra-large';
+}
+
+interface NavigationProfile {
+  preferredNavigation: 'mouse' | 'keyboard' | 'both';
+  enableShortcuts: boolean;
+  reduceAnimations: boolean;
+}
 
 interface StudyRoutine {
   preferredStartTime: string;
@@ -13,6 +26,8 @@ interface StudyRoutine {
 interface UserProfile {
   name: string;
   email: string;
+  accessibilitySettings: AccessibilitySettings;
+  navigationProfile: NavigationProfile;
   studyRoutine: StudyRoutine;
   specificNeeds: string[];
 }
@@ -23,10 +38,21 @@ interface UserProfile {
   imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './user-profile.component.html',
 })
-export class UserProfileComponent {
+export class UserProfileComponent implements OnInit {
   profile: UserProfile = {
     name: '',
     email: '',
+    accessibilitySettings: {
+      focusMode: false,
+      contrastLevel: 'normal',
+      spacingLevel: 'normal',
+      fontSize: 'normal',
+    },
+    navigationProfile: {
+      preferredNavigation: 'both',
+      enableShortcuts: true,
+      reduceAnimations: false,
+    },
     studyRoutine: {
       preferredStartTime: '09:00',
       preferredEndTime: '18:00',
@@ -68,7 +94,18 @@ export class UserProfileComponent {
   }
 
   saveProfile(): void {
-    console.log('Profile saved:', this.profile);
-    // TODO: Implement actual save logic
+    localStorage.setItem('mindease-user-profile', JSON.stringify(this.profile));
+    console.log('Profile saved to localStorage:', this.profile);
+  }
+
+  loadProfile(): void {
+    const saved = localStorage.getItem('mindease-user-profile');
+    if (saved) {
+      this.profile = { ...this.profile, ...JSON.parse(saved) };
+    }
+  }
+
+  ngOnInit(): void {
+    this.loadProfile();
   }
 }

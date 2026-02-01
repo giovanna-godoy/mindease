@@ -35,7 +35,7 @@ interface TaskFormData {
   standalone: true,
   imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './task-form-dialog.component.html',
-  styleUrls: ['./task-form-dialog.component.css']
+  styleUrl: './task-form-dialog.component.css'
 })
 export class TaskFormDialogComponent implements OnChanges {
   @Input() isOpen = false;

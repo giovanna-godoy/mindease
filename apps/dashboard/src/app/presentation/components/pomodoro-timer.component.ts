@@ -53,7 +53,7 @@ export class PomodoroTimerComponent implements OnDestroy {
   }
 
   private startTimer(): void {
-    this.interval = window.setInterval(() => {
+    this.interval = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
       } else {
@@ -74,9 +74,19 @@ export class PomodoroTimerComponent implements OnDestroy {
     
     if (this.mode === 'focus') {
       this.completedCycles++;
+      // Show focus break alert
+      if (typeof window !== 'undefined') {
+        const event = new CustomEvent('pomodoroFocusComplete');
+        window.dispatchEvent(event);
+      }
       this.mode = 'break';
       this.timeLeft = this.breakDuration;
     } else {
+      // Show break end alert
+      if (typeof window !== 'undefined') {
+        const event = new CustomEvent('pomodoroBreakComplete');
+        window.dispatchEvent(event);
+      }
       this.mode = 'focus';
       this.timeLeft = this.focusDuration;
     }

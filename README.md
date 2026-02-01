@@ -1,101 +1,247 @@
-# Mindease
+# MindEase - Plataforma de Acessibilidade Cognitiva
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+**MindEase** é uma plataforma inovadora desenvolvida para apoiar pessoas com necessidades cognitivas específicas, oferecendo ferramentas personalizáveis para melhorar o foco, organização e produtividade.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## 🎯 Sobre o Projeto
 
-## Run tasks
+O MindEase foi desenvolvido como solução para pessoas com TDAH, TEA (Autismo), Dislexia, Ansiedade e outras necessidades cognitivas, proporcionando:
 
-To run the dev server for your app, use:
+- **Interface adaptável** com controles de acessibilidade
+- **Sistema de tarefas** com método Pomodoro integrado
+- **Painel cognitivo** para personalização da experiência
+- **Perfil persistente** com configurações salvas localmente
+- **Arquitetura de micro-frontends** para modularidade
 
-```sh
+## 🏗️ Arquitetura
+
+### Micro-Frontends (MFEs)
+
+- **🏠 Shell** - Aplicação principal e roteamento
+- **⚙️ Panel** - Painel de configurações cognitivas
+- **👤 Profile** - Perfil do usuário e preferências
+- **📋 Tasks** - Organizador de tarefas com Kanban
+- **📊 Dashboard** - Dashboard com timer Pomodoro
+
+### Tecnologias
+
+- **Framework**: Angular 18+ com Standalone Components
+- **Monorepo**: Nx Workspace
+- **Styling**: CSS Variables + Tailwind-like classes
+- **Icons**: Material Icons Rounded
+- **Persistência**: LocalStorage
+- **Arquitetura**: Clean Architecture (Domain/Data/Presentation)
+
+## 🚀 Instalação e Execução
+
+### Pré-requisitos
+
+- **Node.js** 18+ 
+- **npm** ou **yarn**
+- **Git**
+
+### 1. Clone o Repositório
+
+```bash
+git clone <repository-url>
+cd mindease
+```
+
+### 2. Instale as Dependências
+
+```bash
+npm install
+# ou
+yarn install
+```
+
+### 3. Execute o Projeto
+
+```bash
 npx nx serve shell
 ```
 
-To create a production bundle:
+**O comando acima automaticamente:**
+- Inicia o Shell na porta `4200`
+- Inicia todos os MFEs nas suas respectivas portas
+- Configura o roteamento entre os micro-frontends
 
-```sh
+### 4. Acesse a Aplicação
+
+🌐 **URL**: http://localhost:4200
+
+## 📱 Funcionalidades
+
+### 🎛️ Painel Cognitivo
+- **Contraste**: Normal, Alto, Muito Alto
+- **Espaçamento**: Normal, Amplo, Extra Amplo
+- **Fonte**: Normal (16px), Grande (18px), Extra Grande (20px)
+- **Complexidade**: Simples, Médio, Completo
+- **Modo Foco**: Reduz distrações visuais
+- **Alertas Cognitivos**: Avisos de tempo e pausas
+- **Animações**: Normal, Reduzidas, Nenhuma
+
+### 👤 Perfil do Usuário
+- **Informações básicas**: Nome e email
+- **Configurações de acessibilidade**: Persistentes no localStorage
+- **Perfil de navegação**: Mouse, teclado ou ambos
+- **Necessidades específicas**: TDAH, TEA, Dislexia, Ansiedade, etc.
+- **Rotina de estudo**: Horários e durações personalizadas
+
+### 📋 Sistema de Tarefas
+- **Kanban Board**: A Fazer, Em Progresso, Concluído
+- **Criação de tarefas**: Formulário completo com validação
+- **Subtarefas**: Checklist inteligente
+- **Prioridades**: Baixa, Média, Alta (com cores)
+- **Tags**: Sistema de etiquetas personalizáveis
+- **Tempo estimado**: Integração com Pomodoro
+
+### ⏱️ Timer Pomodoro
+- **Ciclos de foco**: 25 minutos (configurável)
+- **Pausas**: 5 minutos (configurável)
+- **Controles**: Start, Pause, Reset
+- **Progresso visual**: Barra de progresso circular
+- **Contador de ciclos**: Acompanhamento de produtividade
+- **Notificações**: Alertas de transição suave
+
+### 🔔 Sistema de Notificações
+- **Alertas de transição**: Avisos suaves entre atividades
+- **Notificações Pomodoro**: Fim de foco e pausas
+- **Auto-dismiss**: Remoção automática com duração configurável
+- **Tipos visuais**: Info, Success, Warning, Transition
+
+## 🎨 Personalização
+
+### Temas e Cores
+
+O projeto utiliza CSS Variables para personalização:
+
+```css
+:root {
+  --primary: #6366f1;
+  --secondary: #f1f5f9;
+  --accent: #10b981;
+  --surface-color: #ffffff;
+  --text-primary: #111827;
+  /* ... mais variáveis */
+}
+```
+
+### Classes de Acessibilidade
+
+- `.high-contrast` - Contraste alto
+- `.very-high-contrast` - Contraste muito alto
+- `.wide-spacing` - Espaçamento amplo
+- `.extra-wide-spacing` - Espaçamento extra amplo
+- `.large-text` - Texto grande
+- `.extra-large-text` - Texto extra grande
+- `.focus-mode` - Modo de foco ativo
+- `.reduced-motion` - Animações reduzidas
+- `.no-animations` - Sem animações
+
+## 🧪 Comandos Úteis
+
+### Desenvolvimento
+
+```bash
+# Servir apenas o shell
+npx nx serve shell
+
+# Servir MFE específico
+npx nx serve panel
+npx nx serve profile
+npx nx serve tasks
+npx nx serve dashboard
+
+# Build de produção
 npx nx build shell
+
+# Visualizar dependências
+npx nx graph
 ```
 
-To see all available targets to run for a project, run:
+### Testes
 
-```sh
-npx nx show project shell
+```bash
+# Executar testes
+npx nx test shell
+npx nx test panel
+
+# Executar todos os testes
+npx nx run-many --target=test
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### Linting
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```bash
+# Lint específico
+npx nx lint shell
 
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/angular:app demo
+# Lint todos os projetos
+npx nx run-many --target=lint
 ```
 
-To generate a new library, use:
+## 📁 Estrutura do Projeto
 
-```sh
-npx nx g @nx/angular:lib mylib
+```
+mindease/
+├── apps/
+│   ├── shell/                 # Aplicação principal
+│   │   ├── src/app/
+│   │   │   ├── domain/        # Regras de negócio
+│   │   │   ├── data/          # Repositórios e dados
+│   │   │   ├── presentation/  # Componentes UI
+│   │   │   └── services/      # Serviços compartilhados
+│   │   └── src/
+│   │       ├── index.html     # HTML principal
+│   │       └── theme.css      # Variáveis CSS globais
+│   ├── panel/                 # MFE - Painel Cognitivo
+│   ├── profile/               # MFE - Perfil do Usuário
+│   ├── tasks/                 # MFE - Sistema de Tarefas
+│   └── dashboard/             # MFE - Dashboard + Pomodoro
+├── libs/                      # Bibliotecas compartilhadas
+├── nx.json                    # Configuração do Nx
+├── package.json              # Dependências
+└── README.md                 # Este arquivo
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+## 🎯 Casos de Uso
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Para Estudantes com TDAH
+- Configure **modo de foco** para reduzir distrações
+- Use **timer Pomodoro** para sessões de estudo estruturadas
+- Organize tarefas no **Kanban** com prioridades visuais
+- Receba **alertas cognitivos** para pausas regulares
 
-## Set up CI!
+### Para Pessoas com TEA
+- Ajuste **contraste e espaçamento** para conforto visual
+- Configure **rotinas de estudo** previsíveis
+- Use **checklist de subtarefas** para quebrar atividades complexas
+- Desative **animações** se causarem desconforto
 
-### Step 1
+### Para Pessoas com Ansiedade
+- Ative **modo de foco** para interface mais limpa
+- Configure **alertas suaves** para transições
+- Use **visualização detalhada** opcional
+- Personalize **necessidades específicas** no perfil
 
-To connect to Nx Cloud, run the following command:
+## 🤝 Contribuição
 
-```sh
-npx nx connect
-```
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+## 📄 Licença
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
-### Step 2
+## 👥 Equipe
 
-Use the following command to configure a CI workflow for your workspace:
+Desenvolvido com ❤️ para tornar a tecnologia mais acessível e inclusiva.
 
-```sh
-npx nx g ci-workflow
-```
+---
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**MindEase** - *Facilitando o foco, organizando a mente* 🧠✨
