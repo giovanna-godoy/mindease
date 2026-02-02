@@ -1,13 +1,22 @@
 <div class="login-container">
   <div class="login-card">
+    <!-- Logo e Header -->
     <div class="login-header">
-      <h2>Entrar no MindEase</h2>
-      <p>Acesse sua conta para sincronizar seus dados</p>
+      <div class="logo">
+        <mat-icon class="logo-icon">psychology</mat-icon>
+        <h1>MindEase</h1>
+      </div>
+      <h2>{{ isLoginMode ? 'Bem-vindo de volta' : 'Criar conta' }}</h2>
+      <p>{{ isLoginMode ? 'Entre na sua conta para continuar' : 'Junte-se à comunidade MindEase' }}</p>
     </div>
 
+    <!-- Formulário -->
     <form (ngSubmit)="onSubmit()" class="login-form">
       <div class="form-group">
-        <label for="email">E-mail</label>
+        <label for="email">
+          <mat-icon>mail</mat-icon>
+          E-mail
+        </label>
         <input
           id="email"
           type="email"
@@ -16,11 +25,15 @@
           required
           class="form-input"
           placeholder="seu.email@exemplo.com"
+          [class.error]="errorMessage && !email"
         />
       </div>
 
       <div class="form-group">
-        <label for="password">Senha</label>
+        <label for="password">
+          <mat-icon>lock</mat-icon>
+          Senha
+        </label>
         <input
           id="password"
           type="password"
@@ -29,25 +42,39 @@
           required
           class="form-input"
           placeholder="Sua senha"
+          [class.error]="errorMessage && !password"
         />
       </div>
 
+      <!-- Mensagem de erro -->
+      <div *ngIf="errorMessage" class="error-message">
+        <mat-icon>error</mat-icon>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Botão principal -->
       <button type="submit" class="btn-primary" [disabled]="isLoading">
-        <span *ngIf="isLoading">Entrando...</span>
-        <span *ngIf="!isLoading">Entrar</span>
+        <mat-icon *ngIf="isLoading" class="loading-icon">hourglass_empty</mat-icon>
+        <mat-icon *ngIf="!isLoading && isLoginMode">login</mat-icon>
+        <mat-icon *ngIf="!isLoading && !isLoginMode">person_add</mat-icon>
+        <span>{{ isLoading ? 'Processando...' : (isLoginMode ? 'Entrar' : 'Criar conta') }}</span>
       </button>
 
-      <div class="login-divider">
+      <!-- Divider -->
+      <div class="divider">
         <span>ou</span>
       </div>
 
+      <!-- Botão secundário -->
       <button type="button" (click)="toggleMode()" class="btn-secondary">
-        {{ isLoginMode ? 'Criar nova conta' : 'Já tenho conta' }}
+        <mat-icon>{{ isLoginMode ? 'person_add' : 'login' }}</mat-icon>
+        <span>{{ isLoginMode ? 'Criar nova conta' : 'Já tenho conta' }}</span>
       </button>
     </form>
 
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>Ao continuar, você concorda com nossos <a href="#">Termos de Uso</a> e <a href="#">Política de Privacidade</a></p>
     </div>
   </div>
 </div>

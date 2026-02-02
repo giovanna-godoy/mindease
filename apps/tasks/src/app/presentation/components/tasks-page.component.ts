@@ -1,16 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FilterPipe } from '../pipes/filter.pipe';
 import { TaskFormDialogComponent } from './task-form-dialog.component';
+import { Subscription } from 'rxjs';
 
-interface Subtask {
+export interface Subtask {
   id: string;
   title: string;
   completed: boolean;
 }
 
-interface Task {
+export interface Task {
   id: string;
   title: string;
   description: string;
@@ -19,6 +20,8 @@ interface Task {
   estimatedTime: number;
   subtasks: Subtask[];
   tags: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 @Component({
@@ -27,78 +30,54 @@ interface Task {
   imports: [CommonModule, MatIconModule, FilterPipe, TaskFormDialogComponent],
   templateUrl: './tasks-page.component.html',
 })
-export class TasksPageComponent {
-  tasks: Task[] = [
-    {
-      id: '1',
-      title: 'Fazer exercícios de acessibilidade',
-      description: 'Praticar ARIA labels e navegação por teclado',
-      status: 'todo',
-      priority: 'Média',
-      estimatedTime: 90,
-      subtasks: [
-        { id: '1-1', title: 'Ler documentação WCAG', completed: false },
-        { id: '1-2', title: 'Implementar navegação por teclado', completed: false },
-      ],
-      tags: ['Acessibilidade', 'A11y'],
-    },
-    {
-      id: '2',
-      title: 'Configurar ambiente de testes',
-      description: 'Instalar e configurar Jest e React Testing Library',
-      status: 'todo',
-      priority: 'Baixa',
-      estimatedTime: 45,
-      subtasks: [],
-      tags: ['Testes', 'Configuração'],
-    },
-    {
-      id: '3',
-      title: 'Revisar conteúdo de React',
-      description: 'Estudar hooks, context API e performance optimization',
-      status: 'in_progress',
-      priority: 'Alta',
-      estimatedTime: 120,
-      subtasks: [
-        { id: '3-1', title: 'Estudar useState e useEffect', completed: true },
-        { id: '3-2', title: 'Praticar useContext', completed: true },
-        { id: '3-3', title: 'Revisar useMemo e useCallback', completed: false },
-      ],
-      tags: ['React', 'Frontend'],
-    },
-    {
-      id: '4',
-      title: 'Preparar apresentação final',
-      description: 'Criar slides e ensaiar apresentação do projeto MindEase',
-      status: 'in_progress',
-      priority: 'Alta',
-      estimatedTime: 60,
-      subtasks: [
-        { id: '4-1', title: 'Criar estrutura dos slides', completed: true },
-        { id: '4-2', title: 'Adicionar capturas de tela', completed: false },
-        { id: '4-3', title: 'Ensaiar apresentação', completed: false },
-      ],
-      tags: ['Apresentação', 'MindEase'],
-    },
-    {
-      id: '5',
-      title: 'Concluir projeto de API Rest',
-      description: 'Finalizar endpoints e documentação',
-      status: 'done',
-      priority: 'Alta',
-      estimatedTime: 180,
-      subtasks: [
-        { id: '5-1', title: 'Criar endpoints CRUD', completed: true },
-        { id: '5-2', title: 'Adicionar autenticação', completed: true },
-        { id: '5-3', title: 'Escrever documentação', completed: true },
-      ],
-      tags: ['Backend', 'API'],
-    },
-  ];
+export class TasksPageComponent implements OnInit, OnDestroy {
+  tasks: Task[] = [];
+  private subscription?: Subscription;
 
   isDialogOpen = false;
   dialogTask: Task | null = null;
   dialogDefaultStatus: 'todo' | 'in_progress' | 'done' = 'todo';
+
+  constructor() {}
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.loadTasks();
+    }, 100);
+  }
+
+  async loadTasks(): Promise<void> {
+    if (typeof window !== 'undefined') {
+      const firebaseService = (window as any).firebaseService;
+      if (firebaseService && firebaseService.getCurrentUser()) {
+        const user = firebaseService.getCurrentUser();
+        try {
+          const tasks = await firebaseService.getUserTasks(user.uid);
+          this.tasks = tasks;
+        } catch (error) {
+          this.tasks = [];
+        }
+      } else {
+        setTimeout(() => {
+          this.loadTasks();
+        }, 500);
+      }
+    }
+  }
+
+  async saveTasks(): Promise<void> {
+    if (typeof window !== 'undefined') {
+      const firebaseService = (window as any).firebaseService;
+      if (firebaseService) {
+        const user = firebaseService.getCurrentUser();
+        if (user) {
+          await firebaseService.saveTasks(user.uid, this.tasks);
+        }
+      }
+    }
+  }
+
+  ngOnDestroy(): void {}
 
   openNewTaskDialog(status?: 'todo' | 'in_progress' | 'done'): void {
     this.dialogTask = null;
@@ -115,21 +94,23 @@ export class TasksPageComponent {
     this.isDialogOpen = isOpen;
   }
 
-  onTaskSubmit(taskData: any): void {
+  async onTaskSubmit(taskData: any): Promise<void> {
     if (this.dialogTask) {
-      // Update existing task
       const index = this.tasks.findIndex(t => t.id === this.dialogTask!.id);
       if (index !== -1) {
-        this.tasks[index] = { ...this.dialogTask, ...taskData };
+        this.tasks[index] = { ...this.dialogTask, ...taskData, updatedAt: new Date() };
       }
     } else {
-      // Create new task
       const newTask: Task = {
         id: Date.now().toString(),
-        ...taskData
+        ...taskData,
+        status: this.dialogDefaultStatus,
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
       this.tasks.push(newTask);
     }
+    await this.saveTasks();
   }
 
   getPriorityColor(priority: string): string {

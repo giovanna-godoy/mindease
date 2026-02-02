@@ -1,7 +1,13 @@
-<app-welcome-dialog></app-welcome-dialog>
-<div class="flex h-screen w-full bg-background overflow-hidden">
-  <app-sidebar></app-sidebar>
-  <main class="flex-1 overflow-y-auto">
-    <router-outlet></router-outlet>
-  </main>
+<!-- Tela de Login -->
+<app-login *ngIf="!(currentUser$ | async)"></app-login>
+
+<!-- App Principal -->
+<div *ngIf="currentUser$ | async" class="app-container">
+  <app-welcome-dialog></app-welcome-dialog>
+  <div class="flex h-screen w-full bg-background overflow-hidden">
+    <app-sidebar></app-sidebar>
+    <main class="flex-1 overflow-y-auto">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 </div>

@@ -12,7 +12,7 @@ type TimerMode = 'focus' | 'break';
 })
 export class PomodoroTimerComponent implements OnDestroy {
   mode: TimerMode = 'focus';
-  timeLeft = 25 * 60; // 25 minutes in seconds
+  timeLeft = 25 * 60;
   isActive = false;
   completedCycles = 0;
   private interval?: number;
@@ -74,7 +74,6 @@ export class PomodoroTimerComponent implements OnDestroy {
     
     if (this.mode === 'focus') {
       this.completedCycles++;
-      // Show focus break alert
       if (typeof window !== 'undefined') {
         const event = new CustomEvent('pomodoroFocusComplete');
         window.dispatchEvent(event);
@@ -82,7 +81,6 @@ export class PomodoroTimerComponent implements OnDestroy {
       this.mode = 'break';
       this.timeLeft = this.breakDuration;
     } else {
-      // Show break end alert
       if (typeof window !== 'undefined') {
         const event = new CustomEvent('pomodoroBreakComplete');
         window.dispatchEvent(event);

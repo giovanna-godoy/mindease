@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
-import { getAuth, Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User } from 'firebase/auth';
+import { getAuth, Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { getFirestore, Firestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import { getAnalytics } from 'firebase/analytics';
 import { environment } from '../../environments/environment';
@@ -15,11 +15,12 @@ export class FirebaseService {
   public firestore: Firestore = getFirestore(this.app);
   private analytics = getAnalytics(this.app);
 
-  constructor() {}
+  constructor() {
+    setPersistence(this.auth, browserLocalPersistence).catch(() => {});
+  }
 
-  // Authentication
   login(email: string, password: string): Observable<User> {
-    return from(signInWithEmailAndPassword(this.auth, email, password).then(result => result.user));
+    return from(signInWithEmailAndPassword(this.auth, email.trim(), password).then(result => result.user));
   }
 
   register(email: string, password: string): Observable<User> {
@@ -34,7 +35,6 @@ export class FirebaseService {
     return this.auth.currentUser;
   }
 
-  // User Profile
   async saveUserProfile(userId: string, profileData: any): Promise<void> {
     const userRef = doc(this.firestore, 'users', userId);
     await setDoc(userRef, profileData, { merge: true });
@@ -46,7 +46,6 @@ export class FirebaseService {
     return docSnap.exists() ? docSnap.data() : null;
   }
 
-  // Tasks
   async saveTasks(userId: string, tasks: any[]): Promise<void> {
     const userRef = doc(this.firestore, 'users', userId);
     await setDoc(userRef, { tasks }, { merge: true });
@@ -58,7 +57,6 @@ export class FirebaseService {
     return docSnap.exists() ? docSnap.data()?.['tasks'] || [] : [];
   }
 
-  // Settings
   async saveSettings(userId: string, settings: any): Promise<void> {
     const userRef = doc(this.firestore, 'users', userId);
     await setDoc(userRef, { settings }, { merge: true });
