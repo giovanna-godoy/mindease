@@ -6,6 +6,7 @@ import { SidebarComponent } from './presentation/components/sidebar.component';
 import { LoginComponent } from './presentation/components/login.component';
 import { AuthService } from './services/auth.service';
 import { FirebaseService } from './services/firebase.service';
+import { AccessibilityService } from './services/accessibility.service';
 import { Observable } from 'rxjs';
 import { User } from 'firebase/auth';
 
@@ -21,11 +22,13 @@ export class App implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private firebaseService: FirebaseService
+    private firebaseService: FirebaseService,
+    private accessibilityService: AccessibilityService
   ) {
     this.currentUser$ = this.authService.currentUser$;
     if (typeof window !== 'undefined') {
       (window as any).firebaseService = this.firebaseService;
+      (window as any).accessibilityService = this.accessibilityService;
     }
   }
 

@@ -30,6 +30,12 @@
   max-width: 420px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
   border: 1px solid var(--border-color);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.login-card.register-mode {
+  max-width: 600px;
 }
 
 .login-header {
@@ -109,7 +115,7 @@
 
 .form-input {
   padding: 0.875rem 1rem;
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 0.875rem;
   background: var(--surface-color);
@@ -120,7 +126,7 @@
 .form-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
 }
 
 .form-input.error {
@@ -194,7 +200,7 @@
 .btn-secondary {
   background: var(--secondary-color);
   color: var(--text-primary);
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
 }
 
 .btn-secondary:hover {
@@ -264,6 +270,10 @@
     border-radius: 12px;
   }
   
+  .login-card.register-mode {
+    max-width: 100%;
+  }
+  
   .logo h1 {
     font-size: 1.5rem;
   }
@@ -271,4 +281,150 @@
   .login-header h2 {
     font-size: 1.25rem;
   }
+}
+
+/* Estilos para os campos do perfil */
+.profile-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-header mat-icon {
+  color: var(--primary);
+  font-size: 1.25rem;
+}
+
+.section-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.toggle-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggle-item span {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.toggle-btn {
+  width: 3rem;
+  height: 1.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  background: var(--muted);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.toggle-btn.active {
+  background: var(--primary);
+}
+
+.toggle-slider {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: white;
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  transition: transform 0.2s;
+}
+
+.toggle-btn.active .toggle-slider {
+  transform: translateX(1.5rem);
+}
+
+.needs-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.needs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+
+.need-btn {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.need-btn:hover {
+  border-color: var(--primary);
+}
+
+.need-btn.selected {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.custom-need {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.custom-need input {
+  flex: 1;
+}
+
+.add-btn {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-btn mat-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
 }

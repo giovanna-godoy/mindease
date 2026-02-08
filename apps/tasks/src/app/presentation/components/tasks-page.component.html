@@ -34,20 +34,38 @@
           <mat-icon class="material-icons-rounded text-lg">add</mat-icon>
         </button>
       </div>
-      <div class="space-y-3">
-        <div *ngFor="let task of tasks | filter:'todo'" class="p-3 rounded-lg" [style.backgroundColor]="'var(--muted)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+      <div class="space-y-3" 
+           (dragover)="onDragOver($event)" 
+           (drop)="onDrop($event, 'todo')">
+        <div *ngFor="let task of tasks | filter:'todo'" 
+             class="p-3 rounded-lg cursor-move" 
+             [style.backgroundColor]="'var(--muted)'" 
+             [style.borderColor]="'var(--border)'" 
+             style="border: 1px solid"
+             draggable="true"
+             (dragstart)="onDragStart($event, task)"
+             (dragover)="onDragOver($event)"
+             (drop)="onDrop($event, 'todo')">
           <div class="flex items-start justify-between mb-2">
             <h3 class="font-medium text-sm">{{ task.title }}</h3>
-            <button class="text-muted-foreground hover:text-foreground">
-              <mat-icon class="material-icons-rounded text-sm">more_vert</mat-icon>
-            </button>
+            <div class="flex gap-1">
+              <button (click)="openEditTaskDialog(task)" class="text-muted-foreground hover:text-foreground" title="Editar tarefa">
+                <mat-icon class="material-icons-rounded text-sm">edit</mat-icon>
+              </button>
+            </div>
           </div>
           <p class="text-xs text-muted-foreground mb-3">{{ task.description }}</p>
+          <div class="detailed-info text-xs mb-2" [style.color]="'var(--muted-foreground)'" *ngIf="task.createdAt">
+            Criada em: {{ task.createdAt | date:'dd/MM/yyyy HH:mm' }}
+          </div>
           <div class="flex flex-wrap gap-1 mb-2">
             <span *ngFor="let subtask of task.subtasks" class="text-xs px-2 py-1 rounded" [style.backgroundColor]="subtask.completed ? 'var(--accent)' : 'var(--secondary)'">
               <input type="checkbox" [checked]="subtask.completed" class="mr-1" />
               {{ subtask.title }}
             </span>
+          </div>
+          <div class="detailed-info text-xs mb-2" [style.color]="'var(--muted-foreground)'" *ngIf="getTotalSubtasks(task) > 0">
+            Progresso: {{ getCompletedSubtasks(task) }}/{{ getTotalSubtasks(task) }} subtarefas concluídas
           </div>
           <div class="flex items-center justify-between text-xs text-muted-foreground">
             <div class="flex items-center gap-1">
@@ -78,13 +96,25 @@
           <mat-icon class="material-icons-rounded text-lg">add</mat-icon>
         </button>
       </div>
-      <div class="space-y-3">
-        <div *ngFor="let task of tasks | filter:'in_progress'" class="p-3 rounded-lg" [style.backgroundColor]="'var(--muted)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+      <div class="space-y-3" 
+           (dragover)="onDragOver($event)" 
+           (drop)="onDrop($event, 'in_progress')">
+        <div *ngFor="let task of tasks | filter:'in_progress'" 
+             class="p-3 rounded-lg cursor-move" 
+             [style.backgroundColor]="'var(--muted)'" 
+             [style.borderColor]="'var(--border)'" 
+             style="border: 1px solid"
+             draggable="true"
+             (dragstart)="onDragStart($event, task)"
+             (dragover)="onDragOver($event)"
+             (drop)="onDrop($event, 'in_progress')">
           <div class="flex items-start justify-between mb-2">
             <h3 class="font-medium text-sm">{{ task.title }}</h3>
-            <button class="text-muted-foreground hover:text-foreground">
-              <mat-icon class="material-icons-rounded text-sm">more_vert</mat-icon>
-            </button>
+            <div class="flex gap-1">
+              <button (click)="openEditTaskDialog(task)" class="text-muted-foreground hover:text-foreground" title="Editar tarefa">
+                <mat-icon class="material-icons-rounded text-sm">edit</mat-icon>
+              </button>
+            </div>
           </div>
           <p class="text-xs text-muted-foreground mb-3">{{ task.description }}</p>
           <div class="flex flex-wrap gap-1 mb-2">
@@ -122,13 +152,25 @@
           <mat-icon class="material-icons-rounded text-lg">add</mat-icon>
         </button>
       </div>
-      <div class="space-y-3">
-        <div *ngFor="let task of tasks | filter:'done'" class="p-3 rounded-lg" [style.backgroundColor]="'var(--muted)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+      <div class="space-y-3" 
+           (dragover)="onDragOver($event)" 
+           (drop)="onDrop($event, 'done')">
+        <div *ngFor="let task of tasks | filter:'done'" 
+             class="p-3 rounded-lg cursor-move" 
+             [style.backgroundColor]="'var(--muted)'" 
+             [style.borderColor]="'var(--border)'" 
+             style="border: 1px solid"
+             draggable="true"
+             (dragstart)="onDragStart($event, task)"
+             (dragover)="onDragOver($event)"
+             (drop)="onDrop($event, 'done')">
           <div class="flex items-start justify-between mb-2">
             <h3 class="font-medium text-sm line-through">{{ task.title }}</h3>
-            <button class="text-muted-foreground hover:text-foreground">
-              <mat-icon class="material-icons-rounded text-sm">more_vert</mat-icon>
-            </button>
+            <div class="flex gap-1">
+              <button (click)="openEditTaskDialog(task)" class="text-muted-foreground hover:text-foreground" title="Editar tarefa">
+                <mat-icon class="material-icons-rounded text-sm">edit</mat-icon>
+              </button>
+            </div>
           </div>
           <p class="text-xs text-muted-foreground mb-3">{{ task.description }}</p>
           <div class="flex flex-wrap gap-1 mb-2">

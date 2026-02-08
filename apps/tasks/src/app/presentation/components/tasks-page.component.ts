@@ -41,26 +41,44 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.loadTasks();
-    }, 100);
+    this.loadTasks();
   }
 
   async loadTasks(): Promise<void> {
     if (typeof window !== 'undefined') {
       const firebaseService = (window as any).firebaseService;
-      if (firebaseService && firebaseService.getCurrentUser()) {
+      if (firebaseService) {
         const user = firebaseService.getCurrentUser();
-        try {
-          const tasks = await firebaseService.getUserTasks(user.uid);
-          this.tasks = tasks;
-        } catch (error) {
-          this.tasks = [];
+        if (user) {
+          try {
+            const tasks = await firebaseService.getUserTasks(user.uid);
+            this.tasks = tasks;
+          } catch (error) {
+            this.tasks = [];
+          }
+        } else {
+          // Aguarda o usuário estar disponível
+          const checkUser = () => {
+            const currentUser = firebaseService.getCurrentUser();
+            if (currentUser) {
+              this.loadTasks();
+            } else {
+              setTimeout(checkUser, 100);
+            }
+          };
+          checkUser();
         }
       } else {
-        setTimeout(() => {
-          this.loadTasks();
-        }, 500);
+        // Aguarda o firebaseService estar disponível
+        const checkService = () => {
+          const service = (window as any).firebaseService;
+          if (service) {
+            this.loadTasks();
+          } else {
+            setTimeout(checkService, 100);
+          }
+        };
+        checkService();
       }
     }
   }
@@ -111,6 +129,76 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       this.tasks.push(newTask);
     }
     await this.saveTasks();
+    this.showSuccessMessage(this.dialogTask ? 'Tarefa atualizada com sucesso!' : 'Tarefa criada com sucesso!');
+  }
+
+  private showSuccessMessage(message: string): void {
+    if (typeof window !== 'undefined') {
+      const event = new CustomEvent('showNotification', {
+        detail: {
+          type: 'success',
+          message: message,
+          duration: 3000
+        }
+      });
+      window.dispatchEvent(event);
+    }
+  }
+
+  private draggedTask: Task | null = null;
+
+  async toggleTaskStatus(task: Task): Promise<void> {
+    const statusOrder: ('todo' | 'in_progress' | 'done')[] = ['todo', 'in_progress', 'done'];
+    const currentIndex = statusOrder.indexOf(task.status);
+    const nextIndex = (currentIndex + 1) % statusOrder.length;
+    
+    const index = this.tasks.findIndex(t => t.id === task.id);
+    if (index !== -1) {
+      this.tasks[index] = {
+        ...this.tasks[index],
+        status: statusOrder[nextIndex],
+        updatedAt: new Date()
+      };
+      await this.saveTasks();
+      
+      const statusNames = { todo: 'A Fazer', in_progress: 'Em Progresso', done: 'Concluído' };
+      this.showSuccessMessage(`Tarefa movida para: ${statusNames[statusOrder[nextIndex]]}`);
+    }
+  }
+
+  onDragStart(event: DragEvent, task: Task): void {
+    this.draggedTask = task;
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+    }
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  }
+
+  async onDrop(event: DragEvent, newStatus: 'todo' | 'in_progress' | 'done'): Promise<void> {
+    event.preventDefault();
+    
+    if (this.draggedTask && this.draggedTask.status !== newStatus) {
+      const index = this.tasks.findIndex(t => t.id === this.draggedTask!.id);
+      if (index !== -1) {
+        this.tasks[index] = {
+          ...this.tasks[index],
+          status: newStatus,
+          updatedAt: new Date()
+        };
+        await this.saveTasks();
+        
+        const statusNames = { todo: 'A Fazer', in_progress: 'Em Progresso', done: 'Concluído' };
+        this.showSuccessMessage(`Tarefa movida para: ${statusNames[newStatus]}`);
+      }
+    }
+    
+    this.draggedTask = null;
   }
 
   getPriorityColor(priority: string): string {
@@ -124,5 +212,13 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       default:
         return '#6B7280';
     }
+  }
+
+  getCompletedSubtasks(task: Task): number {
+    return task.subtasks?.filter(s => s.completed).length || 0;
+  }
+
+  getTotalSubtasks(task: Task): number {
+    return task.subtasks?.length || 0;
   }
 }

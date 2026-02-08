@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { SpacingControlComponent } from './spacing-control.component';
+import { AnimationControlComponent } from './animation-control.component';
 
 interface Settings {
   contrastLevel: 'normal' | 'high' | 'very-high';
@@ -22,7 +24,7 @@ interface Option {
 @Component({
   selector: 'app-cognitive-panel',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule, SpacingControlComponent, AnimationControlComponent],
   templateUrl: './cognitive-panel.component.html',
 })
 export class CognitivePanelComponent {
@@ -73,6 +75,12 @@ export class CognitivePanelComponent {
 
   setSpacing(value: string): void {
     this.updateSettings({ spacingLevel: value as 'normal' | 'wide' | 'extra-wide' });
+    if (typeof window !== 'undefined') {
+      const accessibilityService = (window as any).accessibilityService;
+      if (accessibilityService) {
+        accessibilityService.updateSpacing(value as 'normal' | 'wide' | 'extra-wide');
+      }
+    }
   }
 
   setFontSize(value: string): void {
@@ -81,10 +89,22 @@ export class CognitivePanelComponent {
 
   setComplexity(value: string): void {
     this.updateSettings({ complexityLevel: value as 'simple' | 'medium' | 'complete' });
+    if (typeof window !== 'undefined') {
+      const accessibilityService = (window as any).accessibilityService;
+      if (accessibilityService) {
+        accessibilityService.updateComplexity(value as 'simple' | 'medium' | 'complete');
+      }
+    }
   }
 
   setAnimation(value: string): void {
     this.updateSettings({ animationLevel: value as 'normal' | 'reduced' | 'none' });
+    if (typeof window !== 'undefined') {
+      const accessibilityService = (window as any).accessibilityService;
+      if (accessibilityService) {
+        accessibilityService.updateAnimations(value as 'normal' | 'reduced' | 'none');
+      }
+    }
   }
 
   updateSettings(partial: Partial<Settings>): void {
@@ -94,6 +114,12 @@ export class CognitivePanelComponent {
 
   toggleFocusMode(): void {
     this.updateSettings({ focusMode: !this.settings.focusMode });
+    if (typeof window !== 'undefined') {
+      const accessibilityService = (window as any).accessibilityService;
+      if (accessibilityService) {
+        accessibilityService.updateFocusMode(!this.settings.focusMode);
+      }
+    }
   }
 
   toggleCognitiveAlerts(): void {
@@ -102,6 +128,12 @@ export class CognitivePanelComponent {
 
   toggleDetailedView(): void {
     this.updateSettings({ showDetailedView: !this.settings.showDetailedView });
+    if (typeof window !== 'undefined') {
+      const accessibilityService = (window as any).accessibilityService;
+      if (accessibilityService) {
+        accessibilityService.updateDetailedView(!this.settings.showDetailedView);
+      }
+    }
   }
 
   resetSettings(): void {

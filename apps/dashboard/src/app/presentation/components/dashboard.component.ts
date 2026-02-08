@@ -94,4 +94,8 @@ export class DashboardComponent implements OnInit {
         return '#6B7280';
     }
   }
+
+  getCompletedSubtasksCount(subtasks: any[]): number {
+    return subtasks?.filter(s => s.completed).length || 0;
+  }
 }

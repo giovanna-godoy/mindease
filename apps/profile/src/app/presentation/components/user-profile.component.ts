@@ -93,19 +93,101 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  saveProfile(): void {
-    localStorage.setItem('mindease-user-profile', JSON.stringify(this.profile));
-    console.log('Profile saved to localStorage:', this.profile);
+  ngOnInit(): void {
+    this.loadProfile();
   }
 
-  loadProfile(): void {
+  async saveProfile(): Promise<void> {
+    if (typeof window !== 'undefined') {
+      const firebaseService = (window as any).firebaseService;
+      if (firebaseService && firebaseService.getCurrentUser()) {
+        const user = firebaseService.getCurrentUser();
+        try {
+          await firebaseService.saveUserProfile(user.uid, this.profile);
+          this.showSuccessMessage();
+        } catch (error) {
+          localStorage.setItem('mindease-user-profile', JSON.stringify(this.profile));
+          this.showSuccessMessage();
+        }
+      } else {
+        localStorage.setItem('mindease-user-profile', JSON.stringify(this.profile));
+        this.showSuccessMessage();
+      }
+    }
+  }
+
+  private showSuccessMessage(): void {
+    if (typeof window !== 'undefined') {
+      const event = new CustomEvent('showNotification', {
+        detail: {
+          type: 'success',
+          message: 'Perfil salvo com sucesso!',
+          duration: 3000
+        }
+      });
+      window.dispatchEvent(event);
+    }
+  }
+
+  async loadProfile(): Promise<void> {
+    if (typeof window !== 'undefined') {
+      const firebaseService = (window as any).firebaseService;
+      if (firebaseService) {
+        const user = firebaseService.getCurrentUser();
+        if (user) {
+          // Preenche email do usuário logado
+          this.profile.email = user.email || '';
+          
+          try {
+            const profileData = await firebaseService.getUserProfile(user.uid);
+            if (profileData) {
+              this.profile = { ...this.profile, ...profileData, email: user.email };
+            } else {
+              this.loadFromLocalStorage();
+            }
+          } catch (error) {
+            this.loadFromLocalStorage();
+          }
+        } else {
+          // Aguarda usuário estar disponível
+          const checkUser = () => {
+            const currentUser = firebaseService.getCurrentUser();
+            if (currentUser) {
+              this.loadProfile();
+            } else {
+              setTimeout(checkUser, 100);
+            }
+          };
+          checkUser();
+        }
+      } else {
+        // Aguarda firebaseService estar disponível
+        const checkService = () => {
+          const service = (window as any).firebaseService;
+          if (service) {
+            this.loadProfile();
+          } else {
+            setTimeout(checkService, 100);
+          }
+        };
+        checkService();
+      }
+    }
+  }
+
+  private loadFromLocalStorage(): void {
     const saved = localStorage.getItem('mindease-user-profile');
     if (saved) {
       this.profile = { ...this.profile, ...JSON.parse(saved) };
     }
-  }
-
-  ngOnInit(): void {
-    this.loadProfile();
+    
+    // Se não tem email no perfil salvo, pega do usuário logado
+    if (!this.profile.email && typeof window !== 'undefined') {
+      const firebaseService = (window as any).firebaseService;
+      if (firebaseService && firebaseService.getCurrentUser()) {
+        const user = firebaseService.getCurrentUser();
+        this.profile.email = user.email || '';
+      }
+    }
   }
 }

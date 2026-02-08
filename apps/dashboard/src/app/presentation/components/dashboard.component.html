@@ -56,7 +56,7 @@
     <!-- Quick Info -->
     <div class="lg:col-span-2 space-y-4">
       <!-- Tips Card -->
-      <div class="rounded-lg p-4" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+      <div class="complexity-medium rounded-lg p-4" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
         <div class="mb-4">
           <h3 class="flex items-center gap-2 font-semibold">
             <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">trending_up</mat-icon>
@@ -68,15 +68,15 @@
             <span [style.color]="'var(--primary)'">•</span>
             <span>Divida tarefas grandes em etapas menores e mais gerenciáveis</span>
           </li>
-          <li class="flex items-start gap-2">
+          <li class="complexity-complete flex items-start gap-2">
             <span [style.color]="'var(--primary)'">•</span>
             <span>Use o timer Pomodoro para manter sessões de foco efetivas</span>
           </li>
-          <li class="flex items-start gap-2">
+          <li class="complexity-complete flex items-start gap-2">
             <span [style.color]="'var(--primary)'">•</span>
             <span>Faça pausas regulares para evitar sobrecarga cognitiva</span>
           </li>
-          <li class="flex items-start gap-2">
+          <li class="complexity-complete flex items-start gap-2">
             <span [style.color]="'var(--primary)'">•</span>
             <span>Ative o Modo de Foco para reduzir distrações visuais</span>
           </li>
@@ -103,15 +103,26 @@
           <div *ngFor="let task of upcomingTasks" class="flex items-start gap-3 p-3 rounded-lg" [style.backgroundColor]="'var(--muted)'">
             <div class="flex-1 min-w-0">
               <div class="font-medium truncate">{{ task.title }}</div>
+              <div class="detailed-info text-xs mb-2" [style.color]="'var(--muted-foreground)'">
+                {{ task.description }}
+              </div>
               <div class="flex items-center gap-2 mt-1">
                 <span class="text-xs px-2 py-0.5 rounded font-medium" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
                   {{ task.priority }}
                 </span>
-                <span class="text-xs" [style.color]="'var(--muted-foreground)'">
+                <span class="complexity-medium text-xs" [style.color]="'var(--muted-foreground)'">
                   Em Progresso
                 </span>
-                <span *ngIf="task.estimatedTime" class="text-xs" [style.color]="'var(--muted-foreground)'">
+                <span *ngIf="task.estimatedTime" class="complexity-medium text-xs" [style.color]="'var(--muted-foreground)'">
                   {{ task.estimatedTime }}min
+                </span>
+                <span *ngIf="task.subtasks?.length" class="detailed-info complexity-complete text-xs" [style.color]="'var(--muted-foreground)'">
+                  {{ getCompletedSubtasksCount(task.subtasks) }}/{{ task.subtasks.length }} subtarefas
+                </span>
+              </div>
+              <div *ngIf="task.tags?.length" class="detailed-info complexity-complete flex flex-wrap gap-1 mt-2">
+                <span *ngFor="let tag of task.tags" class="text-xs px-1.5 py-0.5 rounded" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
+                  {{ tag }}
                 </span>
               </div>
             </div>

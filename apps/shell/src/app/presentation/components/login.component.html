@@ -6,16 +6,33 @@
         <mat-icon class="logo-icon">psychology</mat-icon>
         <h1>MindEase</h1>
       </div>
-      <h2>{{ isLoginMode ? 'Bem-vindo de volta' : 'Criar conta' }}</h2>
+      <h2>{{ isLoginMode ? 'Bem-vindo' : 'Criar conta' }}</h2>
       <p>{{ isLoginMode ? 'Entre na sua conta para continuar' : 'Junte-se à comunidade MindEase' }}</p>
     </div>
 
     <!-- Formulário -->
     <form (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Campo Nome (apenas no registro) -->
+      <div *ngIf="!isLoginMode" class="form-group">
+        <label for="name">
+          <mat-icon>person</mat-icon>
+          Nome *
+        </label>
+        <input
+          id="name"
+          type="text"
+          [(ngModel)]="name"
+          name="name"
+          required
+          class="form-input"
+          placeholder="Seu nome completo"
+        />
+      </div>
+
       <div class="form-group">
         <label for="email">
           <mat-icon>mail</mat-icon>
-          E-mail
+          E-mail *
         </label>
         <input
           id="email"
@@ -32,7 +49,7 @@
       <div class="form-group">
         <label for="password">
           <mat-icon>lock</mat-icon>
-          Senha
+          Senha *
         </label>
         <input
           id="password"
@@ -71,10 +88,5 @@
         <span>{{ isLoginMode ? 'Criar nova conta' : 'Já tenho conta' }}</span>
       </button>
     </form>
-
-    <!-- Footer -->
-    <div class="login-footer">
-      <p>Ao continuar, você concorda com nossos <a href="#">Termos de Uso</a> e <a href="#">Política de Privacidade</a></p>
-    </div>
   </div>
 </div>
