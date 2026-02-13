@@ -14,7 +14,7 @@ interface Task {
   title: string;
   description: string;
   status: 'todo' | 'in_progress' | 'done';
-  priority: 'Baixa' | 'Média' | 'Alta';
+  priority: 'low' | 'medium' | 'high';
   estimatedTime: number;
   subtasks: Subtask[];
   tags: string[];
@@ -24,8 +24,9 @@ interface TaskFormData {
   title: string;
   description: string;
   status: 'todo' | 'in_progress' | 'done';
-  priority: 'Baixa' | 'Média' | 'Alta';
+  priority: 'low' | 'medium' | 'high';
   estimatedTime: number;
+  dueDate?: string;
   tags: string[];
   subtasks: Subtask[];
 }
@@ -49,8 +50,9 @@ export class TaskFormDialogComponent implements OnChanges {
     title: '',
     description: '',
     status: 'todo',
-    priority: 'Média',
+    priority: 'medium',
     estimatedTime: 0,
+    dueDate: '',
     tags: [],
     subtasks: []
   };
@@ -72,6 +74,7 @@ export class TaskFormDialogComponent implements OnChanges {
         status: this.task.status,
         priority: this.task.priority,
         estimatedTime: this.task.estimatedTime,
+        dueDate: (this.task as any).dueDate || '',
         tags: [...this.task.tags],
         subtasks: [...this.task.subtasks]
       };
@@ -80,8 +83,9 @@ export class TaskFormDialogComponent implements OnChanges {
         title: '',
         description: '',
         status: this.defaultStatus,
-        priority: 'Média',
+        priority: 'medium',
         estimatedTime: 0,
+        dueDate: '',
         tags: [],
         subtasks: []
       };

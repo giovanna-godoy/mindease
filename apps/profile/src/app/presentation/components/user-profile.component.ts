@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { Router, NavigationEnd } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 interface AccessibilitySettings {
   focusMode: boolean;
@@ -63,6 +65,7 @@ export class UserProfileComponent implements OnInit {
   };
 
   newNeed = '';
+  private subscription?: Subscription;
 
   commonNeeds = [
     'TDAH',
@@ -73,6 +76,8 @@ export class UserProfileComponent implements OnInit {
     'Dificuldade de Foco',
     'Burnout',
   ];
+
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   toggleNeed(need: string): void {
     if (this.profile.specificNeeds.includes(need)) {
@@ -95,23 +100,26 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProfile();
+    this.subscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd && event.url.includes('/profile')) {
+        setTimeout(() => this.loadProfile(), 0);
+      }
+    });
   }
 
   async saveProfile(): Promise<void> {
     if (typeof window !== 'undefined') {
       const firebaseService = (window as any).firebaseService;
-      if (firebaseService && firebaseService.getCurrentUser()) {
-        const user = firebaseService.getCurrentUser();
-        try {
-          await firebaseService.saveUserProfile(user.uid, this.profile);
-          this.showSuccessMessage();
-        } catch (error) {
-          localStorage.setItem('mindease-user-profile', JSON.stringify(this.profile));
-          this.showSuccessMessage();
+      if (firebaseService) {
+        const user = await firebaseService.waitForUser();
+        if (user) {
+          try {
+            await firebaseService.saveUserProfile(user.uid, this.profile);
+            this.showSuccessMessage();
+          } catch (error) {
+            console.error('Error saving profile:', error);
+          }
         }
-      } else {
-        localStorage.setItem('mindease-user-profile', JSON.stringify(this.profile));
-        this.showSuccessMessage();
       }
     }
   }
@@ -133,61 +141,23 @@ export class UserProfileComponent implements OnInit {
     if (typeof window !== 'undefined') {
       const firebaseService = (window as any).firebaseService;
       if (firebaseService) {
-        const user = firebaseService.getCurrentUser();
+        const user = await firebaseService.waitForUser();
         if (user) {
-          // Preenche email do usuário logado
           this.profile.email = user.email || '';
           
           try {
             const profileData = await firebaseService.getUserProfile(user.uid);
             if (profileData) {
               this.profile = { ...this.profile, ...profileData, email: user.email };
-            } else {
-              this.loadFromLocalStorage();
             }
           } catch (error) {
-            this.loadFromLocalStorage();
+            console.error('Error loading profile:', error);
           }
-        } else {
-          // Aguarda usuário estar disponível
-          const checkUser = () => {
-            const currentUser = firebaseService.getCurrentUser();
-            if (currentUser) {
-              this.loadProfile();
-            } else {
-              setTimeout(checkUser, 100);
-            }
-          };
-          checkUser();
+          this.cdr.detectChanges();
         }
-      } else {
-        // Aguarda firebaseService estar disponível
-        const checkService = () => {
-          const service = (window as any).firebaseService;
-          if (service) {
-            this.loadProfile();
-          } else {
-            setTimeout(checkService, 100);
-          }
-        };
-        checkService();
       }
     }
   }
 
-  private loadFromLocalStorage(): void {
-    const saved = localStorage.getItem('mindease-user-profile');
-    if (saved) {
-      this.profile = { ...this.profile, ...JSON.parse(saved) };
-    }
-    
-    // Se não tem email no perfil salvo, pega do usuário logado
-    if (!this.profile.email && typeof window !== 'undefined') {
-      const firebaseService = (window as any).firebaseService;
-      if (firebaseService && firebaseService.getCurrentUser()) {
-        const user = firebaseService.getCurrentUser();
-        this.profile.email = user.email || '';
-      }
-    }
-  }
+
 }

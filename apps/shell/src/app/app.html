@@ -4,9 +4,10 @@
 <!-- App Principal -->
 <div *ngIf="currentUser$ | async" class="app-container">
   <app-welcome-dialog></app-welcome-dialog>
+  <app-notification></app-notification>
   <div class="flex h-screen w-full bg-background overflow-hidden">
     <app-sidebar></app-sidebar>
-    <main class="main-content flex-1 overflow-y-auto">
+    <main class="main-content flex-1 overflow-y-auto md:ml-0">
       <router-outlet></router-outlet>
     </main>
   </div>

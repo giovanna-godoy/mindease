@@ -61,6 +61,7 @@
 
 .dialog-form {
   padding: 1.5rem;
+  padding-bottom: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -175,6 +176,7 @@
   gap: 0.5rem;
   justify-content: flex-end;
   padding-top: 1rem;
+  margin-top: 0.5rem;
   border-top: 1px solid var(--border-color);
 }
 
@@ -206,6 +208,35 @@
 
 .btn-secondary:hover {
   background: var(--hover-color);
+}
+
+.priority-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.priority-btn {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: white;
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.priority-btn:hover {
+  border-color: #9f7aea;
+  background: #f3f0ff;
+}
+
+.priority-btn.active {
+  background: #9f7aea;
+  color: white;
+  border-color: #9f7aea;
 }
 
 @media (max-width: 640px) {

@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { SpacingControlComponent } from './spacing-control.component';
 import { AnimationControlComponent } from './animation-control.component';
+import { Router, NavigationEnd } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 interface Settings {
   contrastLevel: 'normal' | 'high' | 'very-high';
@@ -27,7 +29,7 @@ interface Option {
   imports: [CommonModule, MatIconModule, SpacingControlComponent, AnimationControlComponent],
   templateUrl: './cognitive-panel.component.html',
 })
-export class CognitivePanelComponent {
+export class CognitivePanelComponent implements OnInit {
   settings: Settings = {
     contrastLevel: 'normal',
     spacingLevel: 'normal',
@@ -38,6 +40,40 @@ export class CognitivePanelComponent {
     enableCognitiveAlerts: true,
     showDetailedView: false,
   };
+
+  private subscription?: Subscription;
+
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
+    this.loadSettings();
+    this.subscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd && event.url.includes('/panel')) {
+        setTimeout(() => this.loadSettings(), 0);
+      }
+    });
+  }
+
+  async loadSettings(): Promise<void> {
+    if (typeof window !== 'undefined') {
+      const firebaseService = (window as any).firebaseService;
+      if (firebaseService) {
+        const user = await firebaseService.waitForUser();
+        if (user) {
+          try {
+            const savedSettings = await firebaseService.getUserSettings(user.uid);
+            if (savedSettings) {
+              this.settings = { ...this.settings, ...savedSettings };
+              this.applySettings();
+            }
+          } catch (error) {
+            console.error('Error loading settings:', error);
+          }
+          this.cdr.detectChanges();
+        }
+      }
+    }
+  }
 
   contrastOptions: Option[] = [
     { value: 'normal', label: 'Normal', description: 'Contraste padrão' },
@@ -110,6 +146,24 @@ export class CognitivePanelComponent {
   updateSettings(partial: Partial<Settings>): void {
     this.settings = { ...this.settings, ...partial };
     this.applySettings();
+    this.saveSettings();
+    this.showSuccessMessage();
+  }
+
+  async saveSettings(): Promise<void> {
+    if (typeof window !== 'undefined') {
+      const firebaseService = (window as any).firebaseService;
+      if (firebaseService) {
+        const user = await firebaseService.waitForUser();
+        if (user) {
+          try {
+            await firebaseService.saveSettings(user.uid, this.settings);
+          } catch (error) {
+            console.error('Error saving settings:', error);
+          }
+        }
+      }
+    }
   }
 
   toggleFocusMode(): void {
@@ -124,6 +178,12 @@ export class CognitivePanelComponent {
 
   toggleCognitiveAlerts(): void {
     this.updateSettings({ enableCognitiveAlerts: !this.settings.enableCognitiveAlerts });
+    if (typeof window !== 'undefined') {
+      const cognitiveAlertsService = (window as any).cognitiveAlertsService;
+      if (cognitiveAlertsService) {
+        cognitiveAlertsService.setEnabled(!this.settings.enableCognitiveAlerts);
+      }
+    }
   }
 
   toggleDetailedView(): void {
@@ -148,6 +208,20 @@ export class CognitivePanelComponent {
       showDetailedView: false,
     };
     this.applySettings();
+    this.showSuccessMessage('Configurações resetadas com sucesso!');
+  }
+
+  private showSuccessMessage(message: string = 'Configurações salvas com sucesso!'): void {
+    if (typeof window !== 'undefined') {
+      const event = new CustomEvent('showNotification', {
+        detail: {
+          type: 'success',
+          message: message,
+          duration: 3000
+        }
+      });
+      window.dispatchEvent(event);
+    }
   }
 
   private applySettings(): void {

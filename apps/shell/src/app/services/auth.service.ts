@@ -15,6 +15,9 @@ export class AuthService {
       this.currentUserSubject.next(user);
       if (user) {
         this.loadUserData(user.uid);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('userReady', { detail: { user } }));
+        }
       }
     });
   }

@@ -6,8 +6,8 @@
         <mat-icon class="logo-icon">psychology</mat-icon>
         <h1>MindEase</h1>
       </div>
-      <h2>{{ isLoginMode ? 'Bem-vindo' : 'Criar conta' }}</h2>
-      <p>{{ isLoginMode ? 'Entre na sua conta para continuar' : 'Junte-se à comunidade MindEase' }}</p>
+      <p>Sua plataforma de estudos acessível</p>
+      <h2>{{ isLoginMode ? 'Entrar na sua conta' : 'Criar conta' }}</h2>
     </div>
 
     <!-- Formulário -->
@@ -41,7 +41,7 @@
           name="email"
           required
           class="form-input"
-          placeholder="seu.email@exemplo.com"
+          placeholder="seu.email@fiap.com.br"
           [class.error]="errorMessage && !email"
         />
       </div>
@@ -58,7 +58,7 @@
           name="password"
           required
           class="form-input"
-          placeholder="Sua senha"
+          placeholder="Digite sua senha"
           [class.error]="errorMessage && !password"
         />
       </div>
@@ -72,7 +72,7 @@
       <!-- Botão principal -->
       <button type="submit" class="btn-primary" [disabled]="isLoading">
         <mat-icon *ngIf="isLoading" class="loading-icon">hourglass_empty</mat-icon>
-        <mat-icon *ngIf="!isLoading && isLoginMode">login</mat-icon>
+        <mat-icon *ngIf="!isLoading && isLoginMode">arrow_forward</mat-icon>
         <mat-icon *ngIf="!isLoading && !isLoginMode">person_add</mat-icon>
         <span>{{ isLoading ? 'Processando...' : (isLoginMode ? 'Entrar' : 'Criar conta') }}</span>
       </button>
@@ -83,10 +83,14 @@
       </div>
 
       <!-- Botão secundário -->
-      <button type="button" (click)="toggleMode()" class="btn-secondary">
-        <mat-icon>{{ isLoginMode ? 'person_add' : 'login' }}</mat-icon>
-        <span>{{ isLoginMode ? 'Criar nova conta' : 'Já tenho conta' }}</span>
-      </button>
+      <div class="text-center text-sm">
+        <span [style.color]="'var(--muted-foreground)'">
+          {{ isLoginMode ? 'Não tem uma conta?' : 'Já tem uma conta?' }}
+        </span>
+        <button type="button" (click)="toggleMode()" class="ml-1 font-medium" [style.color]="'#9f7aea'" style="background: none; border: none; text-decoration: underline;">
+          {{ isLoginMode ? 'Criar conta' : 'Fazer login' }}
+        </button>
+      </div>
     </form>
   </div>
 </div>

@@ -21,6 +21,14 @@ export class NotificationComponent implements OnInit, OnDestroy {
     this.subscription = this.notificationService.getNotifications().subscribe(
       notifications => this.notifications = notifications
     );
+    
+    // Escuta eventos customizados de notificação
+    if (typeof window !== 'undefined') {
+      window.addEventListener('showNotification', (event: any) => {
+        const { type, message, duration } = event.detail;
+        this.notificationService.showNotification(type, message, duration);
+      });
+    }
   }
 
   ngOnDestroy(): void {

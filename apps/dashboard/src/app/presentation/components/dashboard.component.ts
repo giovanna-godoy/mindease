@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { StatsCardComponent } from './stats-card.component';
 import { PomodoroTimerComponent } from './pomodoro-timer.component';
+import { Router, NavigationEnd } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 export interface Task {
   id: string;
   title: string;
   description: string;
   status: 'todo' | 'in_progress' | 'done';
-  priority: 'Baixa' | 'Média' | 'Alta';
+  priority: 'low' | 'medium' | 'high';
   estimatedTime: number;
   subtasks: any[];
   tags: string[];
@@ -30,34 +32,37 @@ export class DashboardComponent implements OnInit {
   doneTasks = 0;
   highPriorityTasks = 0;
   completionPercentage = 0;
+  private subscription?: Subscription;
 
-  constructor() {}
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.loadTasks();
-    }, 100);
+    this.loadTasks();
+    this.subscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd && (event.url === '/' || event.url.includes('/dashboard'))) {
+        setTimeout(() => this.loadTasks(), 0);
+      }
+    });
   }
 
   async loadTasks(): Promise<void> {
     if (typeof window !== 'undefined') {
       const firebaseService = (window as any).firebaseService;
-      if (firebaseService && firebaseService.getCurrentUser()) {
-        const user = firebaseService.getCurrentUser();
-        try {
-          const tasks = await firebaseService.getUserTasks(user.uid);
-          this.allTasks = tasks;
-          this.calculateStats();
-          this.upcomingTasks = tasks
-            .filter((task: Task) => task.status === 'in_progress')
-            .slice(0, 5);
-        } catch (error) {
-          this.resetStats();
+      if (firebaseService) {
+        const user = await firebaseService.waitForUser();
+        if (user) {
+          try {
+            const tasks = await firebaseService.getUserTasks(user.uid);
+            this.allTasks = tasks;
+            this.calculateStats();
+            this.upcomingTasks = tasks
+              .filter((task: Task) => task.status === 'in_progress')
+              .slice(0, 5);
+            this.cdr.detectChanges();
+          } catch (error) {
+            this.resetStats();
+          }
         }
-      } else {
-        setTimeout(() => {
-          this.loadTasks();
-        }, 500);
       }
     }
   }
@@ -67,7 +72,7 @@ export class DashboardComponent implements OnInit {
     this.todoTasks = this.allTasks.filter(task => task.status === 'todo').length;
     this.inProgressTasks = this.allTasks.filter(task => task.status === 'in_progress').length;
     this.doneTasks = this.allTasks.filter(task => task.status === 'done').length;
-    this.highPriorityTasks = this.allTasks.filter(task => task.priority === 'Alta').length;
+    this.highPriorityTasks = this.allTasks.filter(task => task.priority === 'high').length;
     this.completionPercentage = this.totalTasks > 0 ? Math.round((this.doneTasks / this.totalTasks) * 100) : 0;
   }
 
@@ -84,11 +89,11 @@ export class DashboardComponent implements OnInit {
 
   getPriorityColor(priority: string): string {
     switch (priority) {
-      case 'Alta':
+      case 'high':
         return '#EF4444';
-      case 'Média':
+      case 'medium':
         return '#F59E0B';
-      case 'Baixa':
+      case 'low':
         return '#3B82F6';
       default:
         return '#6B7280';

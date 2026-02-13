@@ -20,6 +20,19 @@ export class NotificationService {
     return this.notifications$.asObservable();
   }
 
+  showNotification(type: 'info' | 'success' | 'warning' | 'transition', message: string, duration: number = 3000): void {
+    const notification: Notification = {
+      id: Date.now().toString(),
+      type: type,
+      title: type === 'success' ? 'Sucesso' : type === 'warning' ? 'Aviso' : 'Informação',
+      message: message,
+      duration: duration,
+      timestamp: new Date()
+    };
+    
+    this.addNotification(notification);
+  }
+
   showTransitionAlert(from: string, to: string): void {
     const notification: Notification = {
       id: Date.now().toString(),

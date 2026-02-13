@@ -20,6 +20,7 @@ interface MenuItem {
 })
 export class SidebarComponent implements OnInit {
   @Input() currentPage: string = 'dashboard';
+  isMobileMenuOpen = false;
 
   menuItems: MenuItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: 'home', route: '/dashboard' },
@@ -55,7 +56,16 @@ export class SidebarComponent implements OnInit {
     if (item) {
       this.currentPage = pageId;
       this.router.navigate([item.route]);
+      this.isMobileMenuOpen = false; // Fecha o menu após navegação
     }
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
   }
 
   logout(): void {

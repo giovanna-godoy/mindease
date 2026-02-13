@@ -97,8 +97,8 @@
         <div class="space-y-3">
           <div *ngIf="upcomingTasks.length === 0" class="text-center py-8" [style.color]="'var(--muted-foreground)'">
             <mat-icon class="material-icons-rounded text-4xl mb-2" [style.color]="'var(--muted-foreground)'">task_alt</mat-icon>
-            <p>Nenhuma tarefa em progresso</p>
-            <p class="text-sm">Vá para Tarefas para começar algo novo!</p>
+            <p>Nenhuma tarefa pendente</p>
+            <p class="text-sm">Adicione novas tarefas na aba Tarefas</p>
           </div>
           <div *ngFor="let task of upcomingTasks" class="flex items-start gap-3 p-3 rounded-lg" [style.backgroundColor]="'var(--muted)'">
             <div class="flex-1 min-w-0">
@@ -108,7 +108,7 @@
               </div>
               <div class="flex items-center gap-2 mt-1">
                 <span class="text-xs px-2 py-0.5 rounded font-medium" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
-                  {{ task.priority }}
+                  {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
                 </span>
                 <span class="complexity-medium text-xs" [style.color]="'var(--muted-foreground)'">
                   Em Progresso

@@ -52,10 +52,10 @@
 }
 
 .logo-icon {
-  font-size: 2rem;
-  width: 2rem;
-  height: 2rem;
-  color: var(--primary);
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #9f7aea;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -63,8 +63,8 @@
 
 .logo h1 {
   font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-weight: 600;
+  color: #9f7aea;
   margin: 0;
 }
 
@@ -76,8 +76,8 @@
 }
 
 .login-header p {
-  color: var(--text-secondary);
-  margin: 0;
+  color: #9ca3af;
+  margin: 0 0 1rem 0;
   font-size: 0.875rem;
   line-height: 1.4;
 }
@@ -125,8 +125,8 @@
 
 .form-input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+  border-color: #9f7aea;
+  box-shadow: 0 0 0 3px rgba(159, 122, 234, 0.1);
 }
 
 .form-input.error {
@@ -182,12 +182,12 @@
 }
 
 .btn-primary {
-  background: var(--primary);
+  background: #9f7aea;
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--primary-hover);
+  background: #8b5cf6;
   transform: translateY(-1px);
 }
 

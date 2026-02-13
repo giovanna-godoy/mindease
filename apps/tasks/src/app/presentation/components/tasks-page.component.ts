@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FilterPipe } from '../pipes/filter.pipe';
 import { TaskFormDialogComponent } from './task-form-dialog.component';
 import { Subscription } from 'rxjs';
+import { Router, NavigationEnd } from '@angular/router';
 
 export interface Subtask {
   id: string;
@@ -16,7 +17,7 @@ export interface Task {
   title: string;
   description: string;
   status: 'todo' | 'in_progress' | 'done';
-  priority: 'Baixa' | 'Média' | 'Alta';
+  priority: 'low' | 'medium' | 'high';
   estimatedTime: number;
   subtasks: Subtask[];
   tags: string[];
@@ -38,47 +39,34 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   dialogTask: Task | null = null;
   dialogDefaultStatus: 'todo' | 'in_progress' | 'done' = 'todo';
 
-  constructor() {}
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadTasks();
+    this.subscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd && event.url.includes('/tasks')) {
+        setTimeout(() => this.loadTasks(), 0);
+      }
+    });
   }
 
   async loadTasks(): Promise<void> {
     if (typeof window !== 'undefined') {
       const firebaseService = (window as any).firebaseService;
       if (firebaseService) {
-        const user = firebaseService.getCurrentUser();
+        const user = await firebaseService.waitForUser();
         if (user) {
+          console.log('Carregando tarefas para usuário:', user.email);
           try {
             const tasks = await firebaseService.getUserTasks(user.uid);
-            this.tasks = tasks;
+            this.tasks = tasks || [];
+            console.log('Tarefas carregadas:', this.tasks.length);
+            this.cdr.detectChanges();
           } catch (error) {
+            console.error('Erro ao carregar tarefas:', error);
             this.tasks = [];
           }
-        } else {
-          // Aguarda o usuário estar disponível
-          const checkUser = () => {
-            const currentUser = firebaseService.getCurrentUser();
-            if (currentUser) {
-              this.loadTasks();
-            } else {
-              setTimeout(checkUser, 100);
-            }
-          };
-          checkUser();
         }
-      } else {
-        // Aguarda o firebaseService estar disponível
-        const checkService = () => {
-          const service = (window as any).firebaseService;
-          if (service) {
-            this.loadTasks();
-          } else {
-            setTimeout(checkService, 100);
-          }
-        };
-        checkService();
       }
     }
   }
@@ -89,13 +77,23 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       if (firebaseService) {
         const user = firebaseService.getCurrentUser();
         if (user) {
+          console.log('Salvando', this.tasks.length, 'tarefas para:', user.email);
           await firebaseService.saveTasks(user.uid, this.tasks);
+          console.log('Tarefas salvas com sucesso');
         }
       }
     }
   }
 
-  ngOnDestroy(): void {}
+  async refreshTasks(): Promise<void> {
+    console.log('Forçando atualização das tarefas...');
+    await this.loadTasks();
+    this.showSuccessMessage('Tarefas atualizadas!');
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+  }
 
   openNewTaskDialog(status?: 'todo' | 'in_progress' | 'done'): void {
     this.dialogTask = null;
@@ -113,23 +111,33 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   }
 
   async onTaskSubmit(taskData: any): Promise<void> {
+    const firebaseService = (window as any).firebaseService;
+    const user = firebaseService?.getCurrentUser();
+    
+    if (!user) return;
+
     if (this.dialogTask) {
+      const updatedTask = { ...this.dialogTask, ...taskData, updatedAt: new Date() };
+      await firebaseService.saveTask(user.uid, updatedTask);
       const index = this.tasks.findIndex(t => t.id === this.dialogTask!.id);
       if (index !== -1) {
-        this.tasks[index] = { ...this.dialogTask, ...taskData, updatedAt: new Date() };
+        this.tasks[index] = updatedTask;
       }
+      this.showSuccessMessage('Tarefa atualizada com sucesso!');
     } else {
       const newTask: Task = {
-        id: Date.now().toString(),
+        id: 'task_' + Date.now(),
         ...taskData,
         status: this.dialogDefaultStatus,
         createdAt: new Date(),
         updatedAt: new Date()
       };
+      const taskId = await firebaseService.saveTask(user.uid, newTask);
+      newTask.id = taskId;
       this.tasks.push(newTask);
+      this.showSuccessMessage('Tarefa criada com sucesso!');
     }
-    await this.saveTasks();
-    this.showSuccessMessage(this.dialogTask ? 'Tarefa atualizada com sucesso!' : 'Tarefa criada com sucesso!');
+    await this.loadTasks();
   }
 
   private showSuccessMessage(message: string): void {
@@ -152,6 +160,10 @@ export class TasksPageComponent implements OnInit, OnDestroy {
     const currentIndex = statusOrder.indexOf(task.status);
     const nextIndex = (currentIndex + 1) % statusOrder.length;
     
+    const firebaseService = (window as any).firebaseService;
+    const user = firebaseService?.getCurrentUser();
+    if (!user) return;
+
     const index = this.tasks.findIndex(t => t.id === task.id);
     if (index !== -1) {
       this.tasks[index] = {
@@ -159,7 +171,7 @@ export class TasksPageComponent implements OnInit, OnDestroy {
         status: statusOrder[nextIndex],
         updatedAt: new Date()
       };
-      await this.saveTasks();
+      await firebaseService.saveTask(user.uid, this.tasks[index]);
       
       const statusNames = { todo: 'A Fazer', in_progress: 'Em Progresso', done: 'Concluído' };
       this.showSuccessMessage(`Tarefa movida para: ${statusNames[statusOrder[nextIndex]]}`);
@@ -184,6 +196,10 @@ export class TasksPageComponent implements OnInit, OnDestroy {
     event.preventDefault();
     
     if (this.draggedTask && this.draggedTask.status !== newStatus) {
+      const firebaseService = (window as any).firebaseService;
+      const user = firebaseService?.getCurrentUser();
+      if (!user) return;
+
       const index = this.tasks.findIndex(t => t.id === this.draggedTask!.id);
       if (index !== -1) {
         this.tasks[index] = {
@@ -191,10 +207,22 @@ export class TasksPageComponent implements OnInit, OnDestroy {
           status: newStatus,
           updatedAt: new Date()
         };
-        await this.saveTasks();
+        await firebaseService.saveTask(user.uid, this.tasks[index]);
         
         const statusNames = { todo: 'A Fazer', in_progress: 'Em Progresso', done: 'Concluído' };
         this.showSuccessMessage(`Tarefa movida para: ${statusNames[newStatus]}`);
+        
+        if (newStatus === 'in_progress' && typeof window !== 'undefined') {
+          const cognitiveAlertsService = (window as any).cognitiveAlertsService;
+          if (cognitiveAlertsService) {
+            cognitiveAlertsService.startTaskTracking(this.draggedTask.id);
+          }
+        } else if (newStatus !== 'in_progress' && typeof window !== 'undefined') {
+          const cognitiveAlertsService = (window as any).cognitiveAlertsService;
+          if (cognitiveAlertsService) {
+            cognitiveAlertsService.stopTaskTracking();
+          }
+        }
       }
     }
     
@@ -203,11 +231,11 @@ export class TasksPageComponent implements OnInit, OnDestroy {
 
   getPriorityColor(priority: string): string {
     switch (priority) {
-      case 'Alta':
+      case 'high':
         return '#EF4444';
-      case 'Média':
+      case 'medium':
         return '#F59E0B';
-      case 'Baixa':
+      case 'low':
         return '#3B82F6';
       default:
         return '#6B7280';
@@ -220,5 +248,9 @@ export class TasksPageComponent implements OnInit, OnDestroy {
 
   getTotalSubtasks(task: Task): number {
     return task.subtasks?.length || 0;
+  }
+
+  getTaskCountByStatus(status: 'todo' | 'in_progress' | 'done'): number {
+    return this.tasks.filter(t => t.status === status).length;
   }
 }

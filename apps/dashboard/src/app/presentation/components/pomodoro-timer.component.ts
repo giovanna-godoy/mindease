@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -19,6 +19,8 @@ export class PomodoroTimerComponent implements OnDestroy {
   
   private focusDuration = 25 * 60;
   private breakDuration = 5 * 60;
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   get progress(): number {
     const maxTime = this.mode === 'focus' ? this.focusDuration : this.breakDuration;
@@ -56,6 +58,7 @@ export class PomodoroTimerComponent implements OnDestroy {
     this.interval = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
+        this.cdr.detectChanges();
       } else {
         this.handleTimerComplete();
       }
@@ -77,6 +80,15 @@ export class PomodoroTimerComponent implements OnDestroy {
       if (typeof window !== 'undefined') {
         const event = new CustomEvent('pomodoroFocusComplete');
         window.dispatchEvent(event);
+        
+        const notificationEvent = new CustomEvent('showNotification', {
+          detail: {
+            type: 'success',
+            message: 'Ciclo de foco concluído! Hora de fazer uma pausa.',
+            duration: 5000
+          }
+        });
+        window.dispatchEvent(notificationEvent);
       }
       this.mode = 'break';
       this.timeLeft = this.breakDuration;
@@ -84,6 +96,15 @@ export class PomodoroTimerComponent implements OnDestroy {
       if (typeof window !== 'undefined') {
         const event = new CustomEvent('pomodoroBreakComplete');
         window.dispatchEvent(event);
+        
+        const notificationEvent = new CustomEvent('showNotification', {
+          detail: {
+            type: 'info',
+            message: 'Pausa concluída! Pronto para mais um ciclo de foco?',
+            duration: 5000
+          }
+        });
+        window.dispatchEvent(notificationEvent);
       }
       this.mode = 'focus';
       this.timeLeft = this.focusDuration;
