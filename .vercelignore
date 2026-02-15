@@ -1,0 +1,9 @@
+node_modules
+.nx
+.angular
+dist
+tmp
+.cache
+coverage
+.env.local
+.env.*.local
