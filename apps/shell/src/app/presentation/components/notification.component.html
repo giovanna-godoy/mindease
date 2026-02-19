@@ -7,17 +7,12 @@
     [class.notification-warning]="notification.type === 'warning'"
     [class.notification-transition]="notification.type === 'transition'"
   >
-    <div class="notification-content">
-      <div class="notification-header">
-        <mat-icon class="notification-icon">
-          {{ getIcon(notification.type) }}
-        </mat-icon>
-        <h4 class="notification-title">{{ notification.title }}</h4>
-        <button (click)="removeNotification(notification.id)" class="notification-close">
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
-      <p class="notification-message">{{ notification.message }}</p>
-    </div>
+    <mat-icon class="notification-icon" [style.color]="getIconColor(notification.type)">
+      {{ getIcon(notification.type) }}
+    </mat-icon>
+    <p class="notification-message">{{ notification.message }}</p>
+    <button (click)="removeNotification(notification.id)" class="notification-close">
+      <mat-icon style="font-size: 18px;">close</mat-icon>
+    </button>
   </div>
 </div>

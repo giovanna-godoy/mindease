@@ -78,7 +78,7 @@ export class FirebaseService {
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
 
-  async deleteTask(taskId: string): Promise<void> {
+  async deleteTask(userId: string, taskId: string): Promise<void> {
     const taskRef = doc(this.firestore, 'tasks', taskId);
     await deleteDoc(taskRef);
   }

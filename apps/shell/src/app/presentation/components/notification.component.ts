@@ -47,4 +47,14 @@ export class NotificationComponent implements OnInit, OnDestroy {
       default: return 'notifications';
     }
   }
+
+  getIconColor(type: string): string {
+    switch (type) {
+      case 'info': return '#3B82F6';
+      case 'success': return '#10B981';
+      case 'warning': return '#F59E0B';
+      case 'transition': return 'var(--primary)';
+      default: return '#6B7280';
+    }
+  }
 }

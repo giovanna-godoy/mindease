@@ -92,15 +92,15 @@
 
           <div class="flex flex-wrap gap-2 mb-3">
             <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
-              <mat-icon class="material-icons-rounded" style="font-size: 14px;">label</mat-icon>
+              <mat-icon class="material-icons-rounded" style="font-size: 16px; width: 16px; height: 16px;">label</mat-icon>
               {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
             </span>
             <span *ngIf="task.subtasks?.length" class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
-              <mat-icon class="material-icons-rounded" style="font-size: 14px;">check_circle</mat-icon>
+              <mat-icon class="material-icons-rounded" style="font-size: 16px; width: 16px; height: 16px;">check_circle</mat-icon>
               {{ getCompletedSubtasks(task) }}/{{ getTotalSubtasks(task) }}
             </span>
             <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
-              <mat-icon class="material-icons-rounded" style="font-size: 14px;">schedule</mat-icon>
+              <mat-icon class="material-icons-rounded" style="font-size: 16px; width: 16px; height: 16px;">schedule</mat-icon>
               {{ task.estimatedTime }}min
             </span>
           </div>
@@ -177,15 +177,15 @@
 
           <div class="flex flex-wrap gap-2 mb-3">
             <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
-              <mat-icon class="material-icons-rounded" style="font-size: 14px;">label</mat-icon>
+              <mat-icon class="material-icons-rounded" style="font-size: 16px; width: 16px; height: 16px;">label</mat-icon>
               {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
             </span>
             <span *ngIf="task.subtasks?.length" class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
-              <mat-icon class="material-icons-rounded" style="font-size: 14px;">check_circle</mat-icon>
+              <mat-icon class="material-icons-rounded" style="font-size: 16px; width: 16px; height: 16px;">check_circle</mat-icon>
               {{ getCompletedSubtasks(task) }}/{{ getTotalSubtasks(task) }}
             </span>
             <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
-              <mat-icon class="material-icons-rounded" style="font-size: 14px;">schedule</mat-icon>
+              <mat-icon class="material-icons-rounded" style="font-size: 16px; width: 16px; height: 16px;">schedule</mat-icon>
               {{ task.estimatedTime }}min
             </span>
           </div>
@@ -227,15 +227,15 @@
 
           <div class="flex flex-wrap gap-2 mb-3">
             <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
-              <mat-icon class="material-icons-rounded" style="font-size: 14px;">label</mat-icon>
+              <mat-icon class="material-icons-rounded" style="font-size: 16px; width: 16px; height: 16px;">label</mat-icon>
               {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
             </span>
             <span *ngIf="task.subtasks?.length" class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="'var(--accent)'" [style.color]="'white'">
-              <mat-icon class="material-icons-rounded" style="font-size: 14px;">check_circle</mat-icon>
+              <mat-icon class="material-icons-rounded" style="font-size: 16px; width: 16px; height: 16px;">check_circle</mat-icon>
               {{ getTotalSubtasks(task) }}/{{ getTotalSubtasks(task) }}
             </span>
             <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
-              <mat-icon class="material-icons-rounded" style="font-size: 14px;">schedule</mat-icon>
+              <mat-icon class="material-icons-rounded" style="font-size: 16px; width: 16px; height: 16px;">schedule</mat-icon>
               {{ task.estimatedTime }}min
             </span>
           </div>
