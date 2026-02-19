@@ -138,6 +138,10 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       this.showSuccessMessage('Tarefa criada com sucesso!');
     }
     await this.loadTasks();
+    
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('tasksUpdated'));
+    }
   }
 
   private showSuccessMessage(message: string): void {

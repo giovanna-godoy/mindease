@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build:prod": "nx build shell --configuration=production && nx build panel --configuration=production && nx build profile --configuration=production && nx build tasks --configuration=production && nx build dashboard --configuration=production",
-    "start": "nx serve shell",
-    "test:ci": "nx run-many --target=test --all --parallel=3 --ci --coverage",
-    "lint:ci": "nx run-many --target=lint --all --parallel=3"
+    "build:prod": "npx nx build shell --configuration=production && npx nx build panel --configuration=production && npx nx build profile --configuration=production && npx nx build tasks --configuration=production && npx nx build dashboard --configuration=production",
+    "start": "npx nx serve shell",
+    "test:ci": "npx nx run-many --target=test --all --parallel=3 --ci --coverage --maxWorkers=2",
+    "lint:ci": "npx nx run-many --target=lint --all --parallel=3"
   },
   "private": true,
   "dependencies": {
@@ -22,7 +22,9 @@
     "@babel/runtime": "^7.24.0",
     "@nx/angular": "22.3.3",
     "firebase": "^12.8.0",
-    "rxjs": "~7.8.0"
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~21.0.0",
@@ -62,7 +64,6 @@
     "tailwindcss": "^3.4.0",
     "ts-jest": "^29.4.0",
     "ts-node": "10.9.1",
-    "tslib": "^2.3.0",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.40.0"
   },

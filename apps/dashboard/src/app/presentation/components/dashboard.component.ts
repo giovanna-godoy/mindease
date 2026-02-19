@@ -1,10 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { StatsCardComponent } from './stats-card.component';
 import { PomodoroTimerComponent } from './pomodoro-timer.component';
 import { Router, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
 
 export interface Task {
   id: string;
@@ -23,7 +23,7 @@ export interface Task {
   imports: [CommonModule, MatIconModule, StatsCardComponent, PomodoroTimerComponent],
   templateUrl: './dashboard.component.html',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   upcomingTasks: Task[] = [];
   allTasks: Task[] = [];
   totalTasks = 0;
@@ -33,16 +33,37 @@ export class DashboardComponent implements OnInit {
   highPriorityTasks = 0;
   completionPercentage = 0;
   private subscription?: Subscription;
+  private refreshSubscription?: Subscription;
 
   constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadTasks();
+    
+    // Observa mudanças de rota
     this.subscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd && (event.url === '/' || event.url.includes('/dashboard'))) {
         setTimeout(() => this.loadTasks(), 0);
       }
     });
+
+    // Atualiza dados a cada 5 segundos
+    this.refreshSubscription = interval(5000).subscribe(() => {
+      this.loadTasks();
+    });
+
+    // Escuta evento customizado de atualização de tarefas
+    if (typeof window !== 'undefined') {
+      window.addEventListener('tasksUpdated', () => this.loadTasks());
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+    this.refreshSubscription?.unsubscribe();
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('tasksUpdated', () => this.loadTasks());
+    }
   }
 
   async loadTasks(): Promise<void> {
