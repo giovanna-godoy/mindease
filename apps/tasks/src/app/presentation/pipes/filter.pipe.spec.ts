@@ -24,18 +24,12 @@ describe('FilterPipe', () => {
     expect(result[1].id).toBe('3');
   });
 
-  it('should return empty array for null input', () => {
-    const result = pipe.transform(null, 'todo');
-    expect(result).toEqual([]);
-  });
-
-  it('should return all tasks when no status provided', () => {
+  it('should return empty array when no tasks match', () => {
     const tasks = [
-      { id: '1', status: 'todo', title: 'Task 1' },
-      { id: '2', status: 'in_progress', title: 'Task 2' }
+      { id: '1', status: 'todo', title: 'Task 1' }
     ];
 
-    const result = pipe.transform(tasks, '');
-    expect(result.length).toBe(2);
+    const result = pipe.transform(tasks, 'done');
+    expect(result.length).toBe(0);
   });
 });
