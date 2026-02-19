@@ -32,10 +32,8 @@ export class SidebarComponent implements OnInit {
   constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
-    // Atualiza currentPage baseado na rota atual
     this.updateCurrentPageFromRoute(this.router.url);
     
-    // Escuta mudanças de rota
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
@@ -56,7 +54,7 @@ export class SidebarComponent implements OnInit {
     if (item) {
       this.currentPage = pageId;
       this.router.navigate([item.route]);
-      this.isMobileMenuOpen = false; // Fecha o menu após navegação
+      this.isMobileMenuOpen = false;
     }
   }
 

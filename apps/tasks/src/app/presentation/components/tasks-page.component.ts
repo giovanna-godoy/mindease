@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { FilterPipe } from '../pipes/filter.pipe';
 import { TaskFormDialogComponent } from './task-form-dialog.component';
@@ -28,12 +29,14 @@ export interface Task {
 @Component({
   selector: 'app-tasks-page',
   standalone: true,
-  imports: [CommonModule, MatIconModule, FilterPipe, TaskFormDialogComponent],
+  imports: [CommonModule, MatIconModule, FilterPipe, TaskFormDialogComponent, FormsModule],
   templateUrl: './tasks-page.component.html',
 })
 export class TasksPageComponent implements OnInit, OnDestroy {
   tasks: Task[] = [];
   private subscription?: Subscription;
+  addingSubtaskFor: string | null = null;
+  newSubtaskTitle: string = '';
 
   isDialogOpen = false;
   dialogTask: Task | null = null;
@@ -252,6 +255,64 @@ export class TasksPageComponent implements OnInit, OnDestroy {
 
   getTotalSubtasks(task: Task): number {
     return task.subtasks?.length || 0;
+  }
+
+  async deleteTask(task: Task): Promise<void> {
+    const firebaseService = (window as any).firebaseService;
+    const user = firebaseService?.getCurrentUser();
+    if (!user) return;
+
+    const index = this.tasks.findIndex(t => t.id === task.id);
+    if (index !== -1) {
+      this.tasks.splice(index, 1);
+      await firebaseService.deleteTask(user.uid, task.id);
+      this.showSuccessMessage('Tarefa excluída com sucesso!');
+      await this.loadTasks();
+      
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('tasksUpdated'));
+      }
+    }
+  }
+
+  showAddSubtask(taskId: string): void {
+    this.addingSubtaskFor = taskId;
+    this.newSubtaskTitle = '';
+  }
+
+  cancelAddSubtask(): void {
+    this.addingSubtaskFor = null;
+    this.newSubtaskTitle = '';
+  }
+
+  async addSubtask(task: Task): Promise<void> {
+    if (!this.newSubtaskTitle.trim()) return;
+
+    const firebaseService = (window as any).firebaseService;
+    const user = firebaseService?.getCurrentUser();
+    if (!user) return;
+
+    const newSubtask: Subtask = {
+      id: 'subtask_' + Date.now(),
+      title: this.newSubtaskTitle.trim(),
+      completed: false
+    };
+
+    const index = this.tasks.findIndex(t => t.id === task.id);
+    if (index !== -1) {
+      this.tasks[index] = {
+        ...this.tasks[index],
+        subtasks: [...(this.tasks[index].subtasks || []), newSubtask],
+        updatedAt: new Date()
+      };
+      await firebaseService.saveTask(user.uid, this.tasks[index]);
+      this.showSuccessMessage('Subtarefa adicionada!');
+      this.cancelAddSubtask();
+      
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('tasksUpdated'));
+      }
+    }
   }
 
   getTaskCountByStatus(status: 'todo' | 'in_progress' | 'done'): number {

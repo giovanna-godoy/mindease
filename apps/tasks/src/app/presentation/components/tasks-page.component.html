@@ -45,52 +45,75 @@
           <mat-icon class="material-icons-rounded text-lg">add</mat-icon>
         </button>
       </div>
-      <div class="space-y-3" 
-           (dragover)="onDragOver($event)" 
-           (drop)="onDrop($event, 'todo')">
+      <div class="space-y-3">
         <div *ngFor="let task of tasks | filter:'todo'" 
-             class="p-3 rounded-lg cursor-move" 
-             [style.backgroundColor]="'var(--muted)'" 
+             class="p-4 rounded-lg" 
+             [style.backgroundColor]="'var(--surface-color)'" 
              [style.borderColor]="'var(--border)'" 
-             style="border: 1px solid"
-             draggable="true"
-             (dragstart)="onDragStart($event, task)"
-             (dragover)="onDragOver($event)"
-             (drop)="onDrop($event, 'todo')">
+             style="border: 1px solid">
           <div class="flex items-start justify-between mb-2">
-            <h3 class="font-medium text-sm">{{ task.title }}</h3>
-            <div class="flex gap-1">
-              <button (click)="openEditTaskDialog(task)" class="text-muted-foreground hover:text-foreground" title="Editar tarefa">
-                <mat-icon class="material-icons-rounded text-sm">edit</mat-icon>
-              </button>
-            </div>
+            <h3 class="font-semibold text-base">{{ task.title }}</h3>
+            <button (click)="deleteTask(task)" class="text-red-500 hover:text-red-600" title="Excluir tarefa">
+              <mat-icon class="material-icons-rounded text-lg">delete</mat-icon>
+            </button>
           </div>
-          <p class="text-xs text-muted-foreground mb-3">{{ task.description }}</p>
-          <div class="detailed-info text-xs mb-2" [style.color]="'var(--muted-foreground)'" *ngIf="task.createdAt">
-            Criada em: {{ task.createdAt | date:'dd/MM/yyyy HH:mm' }}
+          <p class="text-sm mb-3" [style.color]="'var(--muted-foreground)'">{{ task.description }}</p>
+          
+          <div *ngIf="addingSubtaskFor === task.id" class="mb-3 flex gap-2">
+            <input 
+              type="text" 
+              [(ngModel)]="newSubtaskTitle"
+              placeholder="Nova subtarefa..."
+              class="flex-1 px-3 py-2 rounded-lg text-sm"
+              [style.backgroundColor]="'var(--muted)'"
+              [style.border]="'1px solid var(--border)'"
+              (keyup.enter)="addSubtask(task)"
+              (keyup.escape)="cancelAddSubtask()"
+            />
+            <button 
+              (click)="addSubtask(task)"
+              class="px-3 py-2 rounded-lg"
+              [style.backgroundColor]="'var(--primary)'"
+              [style.color]="'white'"
+            >
+              <mat-icon class="material-icons-rounded text-sm">check</mat-icon>
+            </button>
           </div>
-          <div class="flex flex-wrap gap-1 mb-2">
-            <span *ngFor="let subtask of task.subtasks" class="text-xs px-2 py-1 rounded" [style.backgroundColor]="subtask.completed ? 'var(--accent)' : 'var(--secondary)'">
-              <input type="checkbox" [checked]="subtask.completed" class="mr-1" />
-              {{ subtask.title }}
-            </span>
-          </div>
-          <div class="detailed-info text-xs mb-2" [style.color]="'var(--muted-foreground)'" *ngIf="getTotalSubtasks(task) > 0">
-            Progresso: {{ getCompletedSubtasks(task) }}/{{ getTotalSubtasks(task) }} subtarefas concluídas
-          </div>
-          <div class="flex items-center justify-between text-xs text-muted-foreground">
-            <div class="flex items-center gap-1">
-              <mat-icon class="material-icons-rounded text-sm">schedule</mat-icon>
-              {{ task.estimatedTime }}min
-            </div>
-            <span *ngIf="task.priority" class="px-2 py-0.5 rounded text-xs font-medium" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
+
+          <button 
+            *ngIf="addingSubtaskFor !== task.id"
+            (click)="showAddSubtask(task.id)"
+            class="text-sm mb-3 flex items-center gap-1" 
+            [style.color]="'var(--primary)'"
+          >
+            <mat-icon class="material-icons-rounded text-sm">add_circle_outline</mat-icon>
+            Adicionar subtarefa
+          </button>
+
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
+              <mat-icon class="material-icons-rounded" style="font-size: 14px;">label</mat-icon>
               {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
             </span>
-          </div>
-          <div *ngIf="task.tags" class="flex flex-wrap gap-1 mt-2">
-            <span *ngFor="let tag of task.tags" class="text-xs px-2 py-0.5 rounded" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
-              {{ tag }}
+            <span *ngIf="task.subtasks?.length" class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
+              <mat-icon class="material-icons-rounded" style="font-size: 14px;">check_circle</mat-icon>
+              {{ getCompletedSubtasks(task) }}/{{ getTotalSubtasks(task) }}
             </span>
+            <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
+              <mat-icon class="material-icons-rounded" style="font-size: 14px;">schedule</mat-icon>
+              {{ task.estimatedTime }}min
+            </span>
+          </div>
+
+          <div class="flex gap-2">
+            <button class="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--primary)'">
+              <mat-icon class="material-icons-rounded text-sm">arrow_forward</mat-icon>
+              Em Progresso
+            </button>
+            <button class="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--primary)'">
+              <mat-icon class="material-icons-rounded text-sm">arrow_forward</mat-icon>
+              Concluído
+            </button>
           </div>
         </div>
       </div>
@@ -107,46 +130,71 @@
           <mat-icon class="material-icons-rounded text-lg">add</mat-icon>
         </button>
       </div>
-      <div class="space-y-3" 
-           (dragover)="onDragOver($event)" 
-           (drop)="onDrop($event, 'in_progress')">
+      <div class="space-y-3">
         <div *ngFor="let task of tasks | filter:'in_progress'" 
-             class="p-3 rounded-lg cursor-move" 
-             [style.backgroundColor]="'var(--muted)'" 
+             class="p-4 rounded-lg" 
+             [style.backgroundColor]="'var(--surface-color)'" 
              [style.borderColor]="'var(--border)'" 
-             style="border: 1px solid"
-             draggable="true"
-             (dragstart)="onDragStart($event, task)"
-             (dragover)="onDragOver($event)"
-             (drop)="onDrop($event, 'in_progress')">
+             style="border: 1px solid">
           <div class="flex items-start justify-between mb-2">
-            <h3 class="font-medium text-sm">{{ task.title }}</h3>
-            <div class="flex gap-1">
-              <button (click)="openEditTaskDialog(task)" class="text-muted-foreground hover:text-foreground" title="Editar tarefa">
-                <mat-icon class="material-icons-rounded text-sm">edit</mat-icon>
-              </button>
-            </div>
+            <h3 class="font-semibold text-base">{{ task.title }}</h3>
+            <button (click)="deleteTask(task)" class="text-red-500 hover:text-red-600" title="Excluir tarefa">
+              <mat-icon class="material-icons-rounded text-lg">delete</mat-icon>
+            </button>
           </div>
-          <p class="text-xs text-muted-foreground mb-3">{{ task.description }}</p>
-          <div class="flex flex-wrap gap-1 mb-2">
-            <span *ngFor="let subtask of task.subtasks" class="text-xs px-2 py-1 rounded" [style.backgroundColor]="subtask.completed ? 'var(--accent)' : 'var(--secondary)'">
-              <input type="checkbox" [checked]="subtask.completed" class="mr-1" />
-              {{ subtask.title }}
-            </span>
+          <p class="text-sm mb-3" [style.color]="'var(--muted-foreground)'">{{ task.description }}</p>
+          
+          <div *ngIf="addingSubtaskFor === task.id" class="mb-3 flex gap-2">
+            <input 
+              type="text" 
+              [(ngModel)]="newSubtaskTitle"
+              placeholder="Nova subtarefa..."
+              class="flex-1 px-3 py-2 rounded-lg text-sm"
+              [style.backgroundColor]="'var(--muted)'"
+              [style.border]="'1px solid var(--border)'"
+              (keyup.enter)="addSubtask(task)"
+              (keyup.escape)="cancelAddSubtask()"
+            />
+            <button 
+              (click)="addSubtask(task)"
+              class="px-3 py-2 rounded-lg"
+              [style.backgroundColor]="'var(--primary)'"
+              [style.color]="'white'"
+            >
+              <mat-icon class="material-icons-rounded text-sm">check</mat-icon>
+            </button>
           </div>
-          <div class="flex items-center justify-between text-xs text-muted-foreground">
-            <div class="flex items-center gap-1">
-              <mat-icon class="material-icons-rounded text-sm">schedule</mat-icon>
-              {{ task.estimatedTime }}min
-            </div>
-            <span *ngIf="task.priority" class="px-2 py-0.5 rounded text-xs font-medium" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
+
+          <button 
+            *ngIf="addingSubtaskFor !== task.id"
+            (click)="showAddSubtask(task.id)"
+            class="text-sm mb-3 flex items-center gap-1" 
+            [style.color]="'var(--primary)'"
+          >
+            <mat-icon class="material-icons-rounded text-sm">add_circle_outline</mat-icon>
+            Adicionar subtarefa
+          </button>
+
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
+              <mat-icon class="material-icons-rounded" style="font-size: 14px;">label</mat-icon>
               {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
             </span>
-          </div>
-          <div *ngIf="task.tags" class="flex flex-wrap gap-1 mt-2">
-            <span *ngFor="let tag of task.tags" class="text-xs px-2 py-0.5 rounded" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
-              {{ tag }}
+            <span *ngIf="task.subtasks?.length" class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
+              <mat-icon class="material-icons-rounded" style="font-size: 14px;">check_circle</mat-icon>
+              {{ getCompletedSubtasks(task) }}/{{ getTotalSubtasks(task) }}
             </span>
+            <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
+              <mat-icon class="material-icons-rounded" style="font-size: 14px;">schedule</mat-icon>
+              {{ task.estimatedTime }}min
+            </span>
+          </div>
+
+          <div class="flex gap-2">
+            <button class="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--primary)'">
+              <mat-icon class="material-icons-rounded text-sm">arrow_forward</mat-icon>
+              Concluído
+            </button>
           </div>
         </div>
       </div>
@@ -163,45 +211,32 @@
           <mat-icon class="material-icons-rounded text-lg">add</mat-icon>
         </button>
       </div>
-      <div class="space-y-3" 
-           (dragover)="onDragOver($event)" 
-           (drop)="onDrop($event, 'done')">
+      <div class="space-y-3">
         <div *ngFor="let task of tasks | filter:'done'" 
-             class="p-3 rounded-lg cursor-move" 
-             [style.backgroundColor]="'var(--muted)'" 
+             class="p-4 rounded-lg" 
+             [style.backgroundColor]="'var(--surface-color)'" 
              [style.borderColor]="'var(--border)'" 
-             style="border: 1px solid"
-             draggable="true"
-             (dragstart)="onDragStart($event, task)"
-             (dragover)="onDragOver($event)"
-             (drop)="onDrop($event, 'done')">
+             style="border: 1px solid">
           <div class="flex items-start justify-between mb-2">
-            <h3 class="font-medium text-sm line-through">{{ task.title }}</h3>
-            <div class="flex gap-1">
-              <button (click)="openEditTaskDialog(task)" class="text-muted-foreground hover:text-foreground" title="Editar tarefa">
-                <mat-icon class="material-icons-rounded text-sm">edit</mat-icon>
-              </button>
-            </div>
+            <h3 class="font-semibold text-base">{{ task.title }}</h3>
+            <button (click)="deleteTask(task)" class="text-red-500 hover:text-red-600" title="Excluir tarefa">
+              <mat-icon class="material-icons-rounded text-lg">delete</mat-icon>
+            </button>
           </div>
-          <p class="text-xs text-muted-foreground mb-3">{{ task.description }}</p>
-          <div class="flex flex-wrap gap-1 mb-2">
-            <span *ngFor="let subtask of task.subtasks" class="text-xs px-2 py-1 rounded" [style.backgroundColor]="'var(--accent)'">
-              <input type="checkbox" checked disabled class="mr-1" />
-              {{ subtask.title }}
-            </span>
-          </div>
-          <div class="flex items-center justify-between text-xs text-muted-foreground">
-            <div class="flex items-center gap-1">
-              <mat-icon class="material-icons-rounded text-sm">schedule</mat-icon>
-              {{ task.estimatedTime }}min
-            </div>
-            <span *ngIf="task.priority" class="px-2 py-0.5 rounded text-xs font-medium" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
+          <p class="text-sm mb-3" [style.color]="'var(--muted-foreground)'">{{ task.description }}</p>
+
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
+              <mat-icon class="material-icons-rounded" style="font-size: 14px;">label</mat-icon>
               {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
             </span>
-          </div>
-          <div *ngIf="task.tags" class="flex flex-wrap gap-1 mt-2">
-            <span *ngFor="let tag of task.tags" class="text-xs px-2 py-0.5 rounded" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
-              {{ tag }}
+            <span *ngIf="task.subtasks?.length" class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="'var(--accent)'" [style.color]="'white'">
+              <mat-icon class="material-icons-rounded" style="font-size: 14px;">check_circle</mat-icon>
+              {{ getTotalSubtasks(task) }}/{{ getTotalSubtasks(task) }}
+            </span>
+            <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
+              <mat-icon class="material-icons-rounded" style="font-size: 14px;">schedule</mat-icon>
+              {{ task.estimatedTime }}min
             </span>
           </div>
         </div>

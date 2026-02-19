@@ -5,6 +5,7 @@ import { WelcomeDialogComponent } from './presentation/components/welcome-dialog
 import { SidebarComponent } from './presentation/components/sidebar.component';
 import { LoginComponent } from './presentation/components/login.component';
 import { NotificationComponent } from './presentation/components/notification.component';
+import { LofiPlayerComponent } from './presentation/components/lofi-player.component';
 import { AuthService } from './services/auth.service';
 import { FirebaseService } from './services/firebase.service';
 import { AccessibilityService } from './services/accessibility.service';
@@ -13,7 +14,7 @@ import { Observable } from 'rxjs';
 import { User } from 'firebase/auth';
 
 @Component({
-  imports: [RouterModule, CommonModule, WelcomeDialogComponent, SidebarComponent, LoginComponent, NotificationComponent],
+  imports: [RouterModule, CommonModule, WelcomeDialogComponent, SidebarComponent, LoginComponent, NotificationComponent, LofiPlayerComponent],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',

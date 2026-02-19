@@ -105,7 +105,6 @@ export class LoginComponent {
 
     this.authService.register(this.email, this.password).subscribe({
       next: async (user) => {
-        // Salvar perfil básico após registro
         const basicProfile = {
           name: this.name,
           email: this.email

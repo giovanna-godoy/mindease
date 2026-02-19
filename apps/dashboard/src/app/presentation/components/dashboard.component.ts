@@ -40,19 +40,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadTasks();
     
-    // Observa mudanças de rota
     this.subscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd && (event.url === '/' || event.url.includes('/dashboard'))) {
         setTimeout(() => this.loadTasks(), 0);
       }
     });
 
-    // Atualiza dados a cada 5 segundos
     this.refreshSubscription = interval(5000).subscribe(() => {
       this.loadTasks();
     });
 
-    // Escuta evento customizado de atualização de tarefas
     if (typeof window !== 'undefined') {
       window.addEventListener('tasksUpdated', () => this.loadTasks());
     }

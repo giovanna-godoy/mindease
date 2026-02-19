@@ -22,7 +22,6 @@ export class NotificationComponent implements OnInit, OnDestroy {
       notifications => this.notifications = notifications
     );
     
-    // Escuta eventos customizados de notificação
     if (typeof window !== 'undefined') {
       window.addEventListener('showNotification', (event: any) => {
         const { type, message, duration } = event.detail;
