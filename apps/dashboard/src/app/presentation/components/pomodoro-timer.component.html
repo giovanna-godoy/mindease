@@ -54,7 +54,7 @@
       style="border: 1px solid"
     >
       <mat-icon class="material-icons-rounded">psychology</mat-icon>
-      Foco (25min)
+      Foco ({{ focusDuration / 60 }}min)
     </button>
     <button
       (click)="switchMode('break')"
@@ -65,7 +65,7 @@
       style="border: 1px solid"
     >
       <mat-icon class="material-icons-rounded">local_cafe</mat-icon>
-      Pausa (5min)
+      Pausa ({{ breakDuration / 60 }}min)
     </button>
   </div>
 

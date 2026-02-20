@@ -1,4 +1,4 @@
-import { Component, signal, OnDestroy } from '@angular/core';
+import { Component, signal, OnDestroy, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -9,12 +9,17 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './lofi-player.component.html',
   styleUrls: ['./lofi-player.component.css']
 })
-export class LofiPlayerComponent implements OnDestroy {
+export class LofiPlayerComponent implements OnDestroy, AfterViewInit {
+  @ViewChild('playerElement') playerElement!: ElementRef;
+  
   isPlaying = signal(false);
   volume = signal(50);
   currentTrackIndex = signal(0);
   
   private audio: HTMLAudioElement | null = null;
+  private isDragging = false;
+  private offsetX = 0;
+  private offsetY = 0;
   
   tracks = [
     { name: 'Chill Beats', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
@@ -29,6 +34,41 @@ export class LofiPlayerComponent implements OnDestroy {
     this.audio.volume = this.volume() / 100;
     this.audio.loop = false;
     this.audio.addEventListener('ended', () => this.nextTrack());
+  }
+
+  ngAfterViewInit() {
+    const element = this.playerElement.nativeElement;
+    element.addEventListener('mousedown', this.onMouseDown.bind(this));
+  }
+
+  private onMouseDown(e: MouseEvent) {
+    if ((e.target as HTMLElement).closest('button, input')) return;
+    
+    this.isDragging = true;
+    const rect = this.playerElement.nativeElement.getBoundingClientRect();
+    this.offsetX = e.clientX - rect.left;
+    this.offsetY = e.clientY - rect.top;
+    
+    document.addEventListener('mousemove', this.onMouseMove.bind(this));
+    document.addEventListener('mouseup', this.onMouseUp.bind(this));
+    e.preventDefault();
+  }
+
+  private onMouseMove(e: MouseEvent) {
+    if (!this.isDragging) return;
+    
+    const x = e.clientX - this.offsetX;
+    const y = e.clientY - this.offsetY;
+    
+    this.playerElement.nativeElement.style.left = `${x}px`;
+    this.playerElement.nativeElement.style.top = `${y}px`;
+    this.playerElement.nativeElement.style.right = 'auto';
+  }
+
+  private onMouseUp() {
+    this.isDragging = false;
+    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
+    document.removeEventListener('mouseup', this.onMouseUp.bind(this));
   }
 
   ngOnDestroy() {

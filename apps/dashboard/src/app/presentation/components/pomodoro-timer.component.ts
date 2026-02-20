@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -10,17 +10,41 @@ type TimerMode = 'focus' | 'break';
   imports: [CommonModule, MatIconModule],
   templateUrl: './pomodoro-timer.component.html',
 })
-export class PomodoroTimerComponent implements OnDestroy {
+export class PomodoroTimerComponent implements OnDestroy, OnInit {
   mode: TimerMode = 'focus';
   timeLeft = 25 * 60;
   isActive = false;
   completedCycles = 0;
+  focusDuration = 25 * 60;
+  breakDuration = 5 * 60;
   private interval?: number;
-  
-  private focusDuration = 25 * 60;
-  private breakDuration = 5 * 60;
 
   constructor(private cdr: ChangeDetectorRef) {}
+
+  async ngOnInit(): Promise<void> {
+    await this.loadUserSettings();
+  }
+
+  async loadUserSettings(): Promise<void> {
+    if (typeof window !== 'undefined') {
+      const firebaseService = (window as any).firebaseService;
+      if (firebaseService) {
+        const user = await firebaseService.waitForUser();
+        if (user) {
+          try {
+            const profile = await firebaseService.getUserProfile(user.uid);
+            if (profile?.studyRoutine) {
+              this.focusDuration = (profile.studyRoutine.focusDuration || 25) * 60;
+              this.breakDuration = (profile.studyRoutine.breakDuration || 5) * 60;
+              this.timeLeft = this.focusDuration;
+            }
+          } catch (error) {
+            console.error('Error loading user settings:', error);
+          }
+        }
+      }
+    }
+  }
 
   get progress(): number {
     const maxTime = this.mode === 'focus' ? this.focusDuration : this.breakDuration;
@@ -59,8 +83,10 @@ export class PomodoroTimerComponent implements OnDestroy {
       if (this.timeLeft > 0) {
         this.timeLeft--;
         this.cdr.detectChanges();
-      } else {
-        this.handleTimerComplete();
+        
+        if (this.timeLeft === 0) {
+          this.handleTimerComplete();
+        }
       }
     }, 1000);
   }

@@ -9,6 +9,8 @@
   box-shadow: 0 4px 16px rgba(0,0,0,0.15);
   min-width: 280px;
   backdrop-filter: blur(10px);
+  cursor: move;
+  user-select: none;
 }
 
 .player-header {
@@ -103,4 +105,13 @@ h3 {
   background: var(--primary);
   cursor: pointer;
   border: none;
+}
+
+
+.drag-handle {
+  cursor: grab;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
 }

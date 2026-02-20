@@ -192,22 +192,22 @@
 }
 
 .btn-primary {
-  background: var(--primary-color);
+  background: var(--primary-color, #6366f1);
   color: white;
 }
 
 .btn-primary:hover {
-  background: var(--primary-hover);
+  background: var(--primary-hover, #4f46e5);
 }
 
 .btn-secondary {
-  background: var(--secondary-color);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  background: var(--secondary-color, #f1f5f9);
+  color: var(--text-primary, #111827);
+  border: 1px solid var(--border-color, #e5e7eb);
 }
 
 .btn-secondary:hover {
-  background: var(--hover-color);
+  background: var(--hover-color, #e2e8f0);
 }
 
 .priority-buttons {

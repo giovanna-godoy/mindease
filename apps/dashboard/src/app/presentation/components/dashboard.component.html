@@ -1,4 +1,24 @@
 <div class="p-4 md:p-6 space-y-4 md:space-y-6 max-w-7xl mx-auto">
+  <!-- Test Notifications Button (Presentation Mode) -->
+  <div *ngIf="presentationMode" class="fixed bottom-6 left-6 z-50 flex gap-2">
+    <button (click)="testAllNotifications()" class="px-4 py-2 rounded-lg font-medium flex items-center gap-2 shadow-lg" [style.backgroundColor]="'var(--primary)'" [style.color]="'white'">
+      <mat-icon class="material-icons-rounded">notifications_active</mat-icon>
+      Testar Todos os Alertas
+    </button>
+    <button (click)="testNotification('info')" class="px-3 py-2 rounded-lg" [style.backgroundColor]="'#3B82F6'" [style.color]="'white'" title="Info">
+      <mat-icon class="material-icons-rounded">info</mat-icon>
+    </button>
+    <button (click)="testNotification('success')" class="px-3 py-2 rounded-lg" [style.backgroundColor]="'#10B981'" [style.color]="'white'" title="Success">
+      <mat-icon class="material-icons-rounded">check_circle</mat-icon>
+    </button>
+    <button (click)="testNotification('warning')" class="px-3 py-2 rounded-lg" [style.backgroundColor]="'#F59E0B'" [style.color]="'white'" title="Warning">
+      <mat-icon class="material-icons-rounded">warning</mat-icon>
+    </button>
+    <button (click)="testNotification('transition')" class="px-3 py-2 rounded-lg" [style.backgroundColor]="'var(--primary)'" [style.color]="'white'" title="Transition">
+      <mat-icon class="material-icons-rounded">swap_horiz</mat-icon>
+    </button>
+  </div>
+
   <!-- Welcome Section -->
   <div>
     <h1 class="flex items-center gap-2 text-xl md:text-2xl font-bold">
@@ -95,36 +115,34 @@
           </p>
         </div>
         <div class="space-y-3">
-          <div *ngIf="upcomingTasks.length === 0" class="text-center py-8" [style.color]="'var(--muted-foreground)'">
-            <mat-icon class="material-icons-rounded text-4xl mb-2" [style.color]="'var(--muted-foreground)'">task_alt</mat-icon>
-            <p>Nenhuma tarefa pendente</p>
-            <p class="text-sm">Adicione novas tarefas na aba Tarefas</p>
+          <div *ngIf="upcomingTasks.length === 0" class="text-center py-12">
+            <mat-icon class="material-icons-rounded mb-3" [style.color]="'var(--muted-foreground)'" style="font-size: 48px; width: 48px; height: 48px;">task_alt</mat-icon>
+            <p class="font-medium" [style.color]="'var(--card-foreground)'">Nenhuma tarefa pendente</p>
+            <p class="text-sm mt-1" [style.color]="'var(--muted-foreground)'">Adicione novas tarefas na aba Tarefas</p>
           </div>
-          <div *ngFor="let task of upcomingTasks" class="flex items-start gap-3 p-3 rounded-lg" [style.backgroundColor]="'var(--muted)'">
-            <div class="flex-1 min-w-0">
-              <div class="font-medium truncate">{{ task.title }}</div>
-              <div class="detailed-info text-xs mb-2" [style.color]="'var(--muted-foreground)'">
-                {{ task.description }}
-              </div>
-              <div class="flex items-center gap-2 mt-1">
-                <span class="text-xs px-2 py-0.5 rounded font-medium" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
-                  {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
-                </span>
-                <span class="complexity-medium text-xs" [style.color]="'var(--muted-foreground)'">
-                  Em Progresso
-                </span>
-                <span *ngIf="task.estimatedTime" class="complexity-medium text-xs" [style.color]="'var(--muted-foreground)'">
-                  {{ task.estimatedTime }}min
-                </span>
-                <span *ngIf="task.subtasks?.length" class="detailed-info complexity-complete text-xs" [style.color]="'var(--muted-foreground)'">
-                  {{ getCompletedSubtasksCount(task.subtasks) }}/{{ task.subtasks.length }} subtarefas
-                </span>
-              </div>
-              <div *ngIf="task.tags?.length" class="detailed-info complexity-complete flex flex-wrap gap-1 mt-2">
-                <span *ngFor="let tag of task.tags" class="text-xs px-1.5 py-0.5 rounded" [style.backgroundColor]="'var(--secondary)'" [style.color]="'var(--secondary-foreground)'">
-                  {{ tag }}
-                </span>
-              </div>
+          <div *ngFor="let task of upcomingTasks" class="p-3 rounded-lg border" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="font-medium flex-1">{{ task.title }}</div>
+              <span class="text-xs px-2 py-1 rounded-full font-medium" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
+                {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
+              </span>
+            </div>
+            <div *ngIf="task.description" class="detailed-info text-sm mb-3" [style.color]="'var(--muted-foreground)'">
+              {{ task.description }}
+            </div>
+            <div class="flex items-center gap-3 text-xs" [style.color]="'var(--muted-foreground)'">
+              <span *ngIf="task.estimatedTime" class="complexity-medium flex items-center gap-1">
+                <mat-icon class="material-icons-rounded" style="font-size: 14px; width: 14px; height: 14px;">schedule</mat-icon>
+                {{ task.estimatedTime }}min
+              </span>
+              <span *ngIf="task.subtasks?.length" class="detailed-info complexity-complete flex items-center gap-1">
+                <mat-icon class="material-icons-rounded" style="font-size: 14px; width: 14px; height: 14px;">checklist</mat-icon>
+                {{ getCompletedSubtasksCount(task.subtasks) }}/{{ task.subtasks.length }}
+              </span>
+              <span *ngIf="task.tags?.length" class="detailed-info complexity-complete flex items-center gap-1">
+                <mat-icon class="material-icons-rounded" style="font-size: 14px; width: 14px; height: 14px;">label</mat-icon>
+                {{ task.tags.length }}
+              </span>
             </div>
           </div>
         </div>

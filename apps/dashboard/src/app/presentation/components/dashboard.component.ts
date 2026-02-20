@@ -32,12 +32,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   doneTasks = 0;
   highPriorityTasks = 0;
   completionPercentage = 0;
+  presentationMode = false;
   private subscription?: Subscription;
   private refreshSubscription?: Subscription;
 
   constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
+    this.presentationMode = localStorage.getItem('presentationMode') === 'true';
     this.loadTasks();
     
     this.subscription = this.router.events.subscribe(event => {
@@ -120,5 +122,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getCompletedSubtasksCount(subtasks: any[]): number {
     return subtasks?.filter(s => s.completed).length || 0;
+  }
+
+  testNotification(type: 'info' | 'success' | 'warning' | 'transition'): void {
+    const messages = {
+      info: 'Teste de notificação informativa',
+      success: 'Teste de notificação de sucesso',
+      warning: 'Teste de notificação de aviso',
+      transition: 'Teste de transição de atividade'
+    };
+    
+    window.dispatchEvent(new CustomEvent('showNotification', {
+      detail: { type, message: messages[type], duration: 5000 }
+    }));
+  }
+
+  testAllNotifications(): void {
+    const notificationService = (window as any).accessibilityService?.notificationService;
+    if (notificationService) {
+      setTimeout(() => this.testNotification('info'), 0);
+      setTimeout(() => this.testNotification('success'), 1000);
+      setTimeout(() => this.testNotification('warning'), 2000);
+      setTimeout(() => notificationService.showTransitionAlert('Estudar', 'Pausar'), 3000);
+      setTimeout(() => notificationService.showFocusBreakAlert(), 4000);
+      setTimeout(() => notificationService.showBreakEndAlert(), 5000);
+    }
   }
 }
