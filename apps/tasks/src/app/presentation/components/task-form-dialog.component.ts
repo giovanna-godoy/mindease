@@ -2,6 +2,9 @@ import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
 
 interface Subtask {
   id: string;
@@ -34,7 +37,7 @@ interface TaskFormData {
 @Component({
   selector: 'app-task-form-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatDatepickerModule, MatInputModule, MatNativeDateModule],
   templateUrl: './task-form-dialog.component.html',
   styleUrl: './task-form-dialog.component.css'
 })
@@ -95,8 +98,16 @@ export class TaskFormDialogComponent implements OnChanges {
   }
 
   onSubmit(): void {
-    if (!this.formData.title.trim()) return;
+    console.log('onSubmit chamado');
+    console.log('formData:', this.formData);
+    console.log('title:', this.formData.title);
+    
+    if (!this.formData.title.trim()) {
+      console.log('Título vazio, não enviando');
+      return;
+    }
 
+    console.log('Emitindo taskSubmit');
     this.taskSubmit.emit({
       ...this.formData,
       title: this.formData.title.trim(),

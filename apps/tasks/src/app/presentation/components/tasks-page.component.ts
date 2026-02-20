@@ -114,36 +114,64 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   }
 
   async onTaskSubmit(taskData: any): Promise<void> {
+    console.log('onTaskSubmit recebido:', taskData);
     const firebaseService = (window as any).firebaseService;
     const user = firebaseService?.getCurrentUser();
     
-    if (!user) return;
-
-    if (this.dialogTask) {
-      const updatedTask = { ...this.dialogTask, ...taskData, updatedAt: new Date() };
-      await firebaseService.saveTask(user.uid, updatedTask);
-      const index = this.tasks.findIndex(t => t.id === this.dialogTask!.id);
-      if (index !== -1) {
-        this.tasks[index] = updatedTask;
-      }
-      this.showSuccessMessage('Tarefa atualizada com sucesso!');
-    } else {
-      const newTask: Task = {
-        id: 'task_' + Date.now(),
-        ...taskData,
-        status: this.dialogDefaultStatus,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      const taskId = await firebaseService.saveTask(user.uid, newTask);
-      newTask.id = taskId;
-      this.tasks.push(newTask);
-      this.showSuccessMessage('Tarefa criada com sucesso!');
+    console.log('User:', user);
+    if (!user) {
+      console.error('Usuário não encontrado');
+      this.showErrorMessage('Erro: Usuário não autenticado');
+      return;
     }
-    await this.loadTasks();
-    
+
+    try {
+      if (this.dialogTask) {
+        console.log('Atualizando tarefa existente');
+        const updatedTask = { ...this.dialogTask, ...taskData, updatedAt: new Date() };
+        await firebaseService.saveTask(user.uid, updatedTask);
+        const index = this.tasks.findIndex(t => t.id === this.dialogTask!.id);
+        if (index !== -1) {
+          this.tasks[index] = updatedTask;
+        }
+        this.showSuccessMessage('Tarefa atualizada com sucesso!');
+      } else {
+        console.log('Criando nova tarefa');
+        const newTask: Task = {
+          id: 'task_' + Date.now(),
+          ...taskData,
+          status: this.dialogDefaultStatus,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        console.log('Nova tarefa:', newTask);
+        const taskId = await firebaseService.saveTask(user.uid, newTask);
+        console.log('Task ID retornado:', taskId);
+        newTask.id = taskId;
+        this.tasks.push(newTask);
+        this.showSuccessMessage('Tarefa criada com sucesso!');
+      }
+      await this.loadTasks();
+      
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('tasksUpdated'));
+      }
+    } catch (error) {
+      console.error('Erro ao salvar tarefa:', error);
+      this.showErrorMessage('Erro ao salvar tarefa. Verifique suas permissões.');
+    }
+  }
+
+  private showErrorMessage(message: string): void {
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('tasksUpdated'));
+      const event = new CustomEvent('showNotification', {
+        detail: {
+          type: 'warning',
+          message: message,
+          duration: 5000
+        }
+      });
+      window.dispatchEvent(event);
     }
   }
 

@@ -199,29 +199,6 @@
           ></div>
         </button>
       </div>
-
-      <!-- Detailed View -->
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">dashboard</mat-icon>
-          <div>
-            <div class="font-medium">Visualização Detalhada</div>
-            <p class="text-sm" [style.color]="'var(--muted-foreground)'">
-              Mostra informações extras e estatísticas
-            </p>
-          </div>
-        </div>
-        <button
-          (click)="toggleDetailedView()"
-          class="w-12 h-6 rounded-full transition-colors"
-          [style.backgroundColor]="settings.showDetailedView ? 'var(--primary)' : 'var(--muted)'"
-        >
-          <div
-            class="w-5 h-5 rounded-full bg-white transition-transform"
-            [style.transform]="settings.showDetailedView ? 'translateX(24px)' : 'translateX(2px)'"
-          ></div>
-        </button>
-      </div>
     </div>
   </div>
 </div>

@@ -1,4 +1,4 @@
-<div class="rounded-lg p-6" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+<div *ngIf="!isLoading" class="rounded-lg p-6" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
   <div class="mb-6">
     <h3 class="flex items-center gap-2 font-semibold text-lg mb-2">
       <mat-icon class="material-icons-rounded" [style.color]="mode === 'focus' ? 'var(--primary)' : 'var(--accent)'">

@@ -57,9 +57,9 @@
               <mat-icon class="material-icons-rounded text-lg">delete</mat-icon>
             </button>
           </div>
-          <p class="text-sm mb-3" [style.color]="'var(--muted-foreground)'">{{ task.description }}</p>
+          <p class="complexity-medium text-sm mb-3" [style.color]="'var(--muted-foreground)'">{{ task.description }}</p>
           
-          <div *ngIf="addingSubtaskFor === task.id" class="mb-3 flex gap-2">
+          <div *ngIf="addingSubtaskFor === task.id" class="complexity-complete mb-3 flex gap-2">
             <input 
               type="text" 
               [(ngModel)]="newSubtaskTitle"
@@ -83,14 +83,14 @@
           <button 
             *ngIf="addingSubtaskFor !== task.id"
             (click)="showAddSubtask(task.id)"
-            class="text-sm mb-3 flex items-center gap-1" 
+            class="complexity-complete text-sm mb-3 flex items-center gap-1" 
             [style.color]="'var(--primary)'"
           >
             <mat-icon class="material-icons-rounded text-sm">add_circle_outline</mat-icon>
             Adicionar subtarefa
           </button>
 
-          <div class="flex flex-wrap gap-2 mb-3">
+          <div class="complexity-complete flex flex-wrap gap-2 mb-3">
             <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
               <mat-icon class="material-icons-rounded" style="font-size: 16px; width: 16px; height: 16px;">label</mat-icon>
               {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
@@ -142,9 +142,9 @@
               <mat-icon class="material-icons-rounded text-lg">delete</mat-icon>
             </button>
           </div>
-          <p class="text-sm mb-3" [style.color]="'var(--muted-foreground)'">{{ task.description }}</p>
+          <p class="complexity-medium text-sm mb-3" [style.color]="'var(--muted-foreground)'">{{ task.description }}</p>
           
-          <div *ngIf="addingSubtaskFor === task.id" class="mb-3 flex gap-2">
+          <div *ngIf="addingSubtaskFor === task.id" class="complexity-complete mb-3 flex gap-2">
             <input 
               type="text" 
               [(ngModel)]="newSubtaskTitle"
@@ -168,14 +168,14 @@
           <button 
             *ngIf="addingSubtaskFor !== task.id"
             (click)="showAddSubtask(task.id)"
-            class="text-sm mb-3 flex items-center gap-1" 
+            class="complexity-complete text-sm mb-3 flex items-center gap-1" 
             [style.color]="'var(--primary)'"
           >
             <mat-icon class="material-icons-rounded text-sm">add_circle_outline</mat-icon>
             Adicionar subtarefa
           </button>
 
-          <div class="flex flex-wrap gap-2 mb-3">
+          <div class="complexity-complete flex flex-wrap gap-2 mb-3">
             <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
               <mat-icon class="material-icons-rounded" style="font-size: 16px; width: 16px; height: 16px;">label</mat-icon>
               {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
@@ -223,9 +223,9 @@
               <mat-icon class="material-icons-rounded text-lg">delete</mat-icon>
             </button>
           </div>
-          <p class="text-sm mb-3" [style.color]="'var(--muted-foreground)'">{{ task.description }}</p>
+          <p class="complexity-medium text-sm mb-3" [style.color]="'var(--muted-foreground)'">{{ task.description }}</p>
 
-          <div class="flex flex-wrap gap-2 mb-3">
+          <div class="complexity-complete flex flex-wrap gap-2 mb-3">
             <span class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
               <mat-icon class="material-icons-rounded" style="font-size: 16px; width: 16px; height: 16px;">label</mat-icon>
               {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}

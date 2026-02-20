@@ -97,13 +97,83 @@
   --border: rgba(139, 125, 184, 0.1);
 }
 
-/* Animações reduzidas */
-.reduced-motion {
-  --animation-speed: 0.01;
+/* Níveis de complexidade */
+.simple-ui .complexity-medium,
+.simple-ui .complexity-complete,
+.simple-ui app-stats-card.complexity-medium,
+.simple-ui app-stats-card.complexity-complete {
+  display: none !important;
 }
 
-.no-animations {
-  --animation-speed: 0;
+.simple-ui .detailed-info {
+  display: none !important;
+}
+
+/* Stats card complexity */
+.simple-ui .medium-ui-content,
+.simple-ui .complete-ui-content {
+  display: none !important;
+}
+
+.simple-ui .simple-ui-content {
+  display: block !important;
+}
+
+body:not(.simple-ui):not(.complete-ui) .simple-ui-content,
+body:not(.simple-ui):not(.complete-ui) .complete-ui-content {
+  display: none !important;
+}
+
+body:not(.simple-ui):not(.complete-ui) .medium-ui-content {
+  display: block !important;
+}
+
+.complete-ui .simple-ui-content,
+.complete-ui .medium-ui-content {
+  display: none !important;
+}
+
+.complete-ui .complete-ui-content {
+  display: block !important;
+}
+
+body:not(.simple-ui):not(.complete-ui) .complexity-complete,
+body:not(.simple-ui):not(.complete-ui) app-stats-card.complexity-complete {
+  display: none !important;
+}
+
+.complete-ui .complexity-medium,
+.complete-ui app-stats-card.complexity-medium {
+  display: flex !important;
+}
+
+.complete-ui .complexity-complete,
+.complete-ui app-stats-card.complexity-complete {
+  display: flex !important;
+}
+
+.complete-ui .detailed-info {
+  display: inline !important;
+}
+
+/* Medium UI (padrão) mostra complexity-medium */
+body:not(.simple-ui):not(.complete-ui) .complexity-medium,
+body:not(.simple-ui):not(.complete-ui) app-stats-card.complexity-medium {
+  display: flex !important;
+}
+
+/* Animações reduzidas */
+.reduced-motion,
+.reduced-motion * {
+  animation-duration: 0.01s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01s !important;
+}
+
+.no-animations,
+.no-animations * {
+  animation: none !important;
+  transition: none !important;
 }
 
 * {

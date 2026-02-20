@@ -110,6 +110,58 @@
   min-height: 4rem;
 }
 
+.form-input::-webkit-calendar-picker-indicator {
+  background-color: var(--primary-color, #6366f1);
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.form-input[type="date"]::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.form-input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+.form-input[type="date"]::-webkit-datetime-edit-text,
+.form-input[type="date"]::-webkit-datetime-edit-month-field,
+.form-input[type="date"]::-webkit-datetime-edit-day-field,
+.form-input[type="date"]::-webkit-datetime-edit-year-field {
+  color: #111827;
+  padding: 2px;
+}
+
+.date-picker-wrapper {
+  position: relative;
+}
+
+.date-picker-wrapper .form-input {
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.date-picker-wrapper ::ng-deep .mat-datepicker-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.date-picker-wrapper ::ng-deep .mat-datepicker-toggle button {
+  color: var(--primary-color, #6366f1);
+}
+
+::ng-deep .mat-calendar-body-selected {
+  background-color: var(--primary-color, #6366f1) !important;
+  color: white !important;
+}
+
+::ng-deep .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  border-color: var(--primary-color, #6366f1) !important;
+}
+
 .tag-input-container {
   display: flex;
   gap: 0.5rem;
@@ -194,10 +246,17 @@
 .btn-primary {
   background: var(--primary-color, #6366f1);
   color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background: var(--primary-hover, #4f46e5);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-secondary {

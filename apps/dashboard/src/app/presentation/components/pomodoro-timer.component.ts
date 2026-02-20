@@ -17,12 +17,15 @@ export class PomodoroTimerComponent implements OnDestroy, OnInit {
   completedCycles = 0;
   focusDuration = 25 * 60;
   breakDuration = 5 * 60;
+  isLoading = true;
   private interval?: number;
 
   constructor(private cdr: ChangeDetectorRef) {}
 
   async ngOnInit(): Promise<void> {
     await this.loadUserSettings();
+    this.isLoading = false;
+    this.cdr.detectChanges();
   }
 
   async loadUserSettings(): Promise<void> {

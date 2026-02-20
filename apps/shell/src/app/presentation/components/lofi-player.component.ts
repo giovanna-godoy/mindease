@@ -22,9 +22,9 @@ export class LofiPlayerComponent implements OnDestroy, AfterViewInit {
   private offsetY = 0;
   
   tracks = [
-    { name: 'Chill Beats', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-    { name: 'Study Session', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-    { name: 'Focus Flow', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
+    { name: 'Bare Maximum', url: 'https://www.epidemicsound.com/music/tracks/a588d932-727e-4c2d-a18f-382c3f49a3a4/' },
+    { name: 'Since Then', url: 'https://www.epidemicsound.com/music/tracks/b48e401b-b7bf-4201-b8bf-bb1067f61222/' },
+    { name: 'Mercury', url: 'https://www.epidemicsound.com/music/tracks/5947b5d2-4905-4433-a7db-0a327e095352/' }
   ];
 
   currentTrack = signal(this.tracks[0]);

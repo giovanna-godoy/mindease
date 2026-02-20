@@ -41,14 +41,19 @@
       <!-- Due Date -->
       <div class="form-group">
         <label for="dueDate">Data de Conclusão</label>
-        <input
-          id="dueDate"
-          type="date"
-          [(ngModel)]="formData.dueDate"
-          name="dueDate"
-          class="form-input"
-          placeholder="Selecionar data"
-        />
+        <div class="date-picker-wrapper">
+          <input
+            matInput
+            [matDatepicker]="picker"
+            [(ngModel)]="formData.dueDate"
+            name="dueDate"
+            placeholder="Selecionar data"
+            class="form-input"
+            readonly
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="picker" class="date-toggle"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </div>
       </div>
 
       <!-- Priority -->
@@ -87,7 +92,7 @@
         <button type="button" class="btn-secondary" (click)="closeDialog()">
           Cancelar
         </button>
-        <button type="submit" class="btn-primary">
+        <button type="submit" class="btn-primary" [disabled]="!formData.title.trim()">
           {{ task ? 'Atualizar' : 'Criar' }} Tarefa
         </button>
       </div>
