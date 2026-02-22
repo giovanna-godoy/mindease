@@ -44,3 +44,9 @@ Thumbs.db
 .angular
 .vercel
 .env*.local
+
+# Audio files
+*.mp3
+*.wav
+*.ogg
+assets/audio/

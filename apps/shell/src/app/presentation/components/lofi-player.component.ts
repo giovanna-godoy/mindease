@@ -22,15 +22,19 @@ export class LofiPlayerComponent implements OnDestroy, AfterViewInit {
   private offsetY = 0;
   
   tracks = [
-    { name: 'Bare Maximum', url: 'https://www.epidemicsound.com/music/tracks/a588d932-727e-4c2d-a18f-382c3f49a3a4/' },
-    { name: 'Since Then', url: 'https://www.epidemicsound.com/music/tracks/b48e401b-b7bf-4201-b8bf-bb1067f61222/' },
-    { name: 'Mercury', url: 'https://www.epidemicsound.com/music/tracks/5947b5d2-4905-4433-a7db-0a327e095352/' }
+    { name: 'Heroes', url: 'assets/audio/heroes.mp3' },
+    { name: 'Cinematic', url: 'assets/audio/cinematic.mp3' },
+    { name: 'Enlivening', url: 'assets/audio/enlivening.mp3' }
   ];
 
   currentTrack = signal(this.tracks[0]);
 
   constructor() {
     this.audio = new Audio();
+    try {
+      this.audio.crossOrigin = 'anonymous';
+    } catch (e) {
+    }
     this.audio.volume = this.volume() / 100;
     this.audio.loop = false;
     this.audio.addEventListener('ended', () => this.nextTrack());
@@ -106,7 +110,13 @@ export class LofiPlayerComponent implements OnDestroy, AfterViewInit {
 
   private playAudio() {
     if (this.audio) {
-      this.audio.src = this.currentTrack().url;
+      const src = this.currentTrack().url;
+      
+      if (this.audio.src.indexOf(src) === -1) {
+        this.audio.src = src;
+        this.audio.load();
+      }
+      
       this.audio.play().catch(err => console.error('Erro ao tocar:', err));
     }
   }

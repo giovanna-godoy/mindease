@@ -90,13 +90,13 @@ export class FirebaseService {
   }
 
   async saveSettings(userId: string, settings: any): Promise<void> {
-    const userRef = doc(this.firestore, 'users', userId);
-    await setDoc(userRef, { settings }, { merge: true });
+    const settingsRef = doc(this.firestore, 'cognitive-settings', userId);
+    await setDoc(settingsRef, settings, { merge: true });
   }
 
   async getUserSettings(userId: string): Promise<any> {
-    const userRef = doc(this.firestore, 'users', userId);
-    const docSnap = await getDoc(userRef);
-    return docSnap.exists() ? docSnap.data()?.['settings'] || {} : {};
+    const settingsRef = doc(this.firestore, 'cognitive-settings', userId);
+    const docSnap = await getDoc(settingsRef);
+    return docSnap.exists() ? docSnap.data() : {};
   }
 }
