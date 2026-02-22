@@ -8,8 +8,8 @@ describe('NotificationComponent', () => {
   const mockService: any = { getNotifications: () => ({ subscribe: (cb: any) => { cb([]); return { unsubscribe: () => {} }; } }), removeNotification: jest.fn(), showNotification: jest.fn() };
 
   beforeEach(() => {
+    (global as any).window = { addEventListener: jest.fn() };
     comp = new NotificationComponent(mockService as any);
-    (global as any).window = (global as any).window || {};
   });
 
   test('getIcon returns icons for types', () => {
