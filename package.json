@@ -6,7 +6,7 @@
     "build:prod": "npx nx build shell --configuration=production && npx nx build panel --configuration=production && npx nx build profile --configuration=production && npx nx build tasks --configuration=production && npx nx build dashboard --configuration=production",
     "start": "npx nx serve shell",
     "test": "source ~/.nvm/nvm.sh && nvm use 22 && npx nx run-many --target=test --all",
-    "test:ci": "npx nx run-many --target=test --all --passWithNoTests",
+    "test:ci": "npx nx run-many --target=test --all --passWithNoTests --coverage",
     "lint:ci": "npx nx run-many --target=lint --all --parallel=3"
   },
   "private": true,

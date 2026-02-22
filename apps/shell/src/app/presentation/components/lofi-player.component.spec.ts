@@ -7,7 +7,6 @@ describe('LofiPlayerComponent', () => {
   let component: LofiPlayerComponent;
 
   beforeEach(() => {
-    component = new LofiPlayerComponent();
     (global as any).Audio = jest.fn().mockImplementation(() => ({
       play: jest.fn().mockResolvedValue(undefined),
       pause: jest.fn(),
@@ -17,6 +16,7 @@ describe('LofiPlayerComponent', () => {
       src: '',
       crossOrigin: ''
     }));
+    component = new LofiPlayerComponent();
   });
 
   test('togglePlay switches isPlaying state', () => {
