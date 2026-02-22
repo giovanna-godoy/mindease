@@ -29,6 +29,7 @@ interface TaskFormData {
   status: 'todo' | 'in_progress' | 'done';
   priority: 'low' | 'medium' | 'high';
   estimatedTime: number;
+  estimatedMinutes?: number;
   dueDate?: string;
   tags: string[];
   subtasks: Subtask[];
@@ -55,6 +56,7 @@ export class TaskFormDialogComponent implements OnChanges {
     status: 'todo',
     priority: 'medium',
     estimatedTime: 0,
+    estimatedMinutes: 0,
     dueDate: '',
     tags: [],
     subtasks: []
@@ -77,6 +79,7 @@ export class TaskFormDialogComponent implements OnChanges {
         status: this.task.status,
         priority: this.task.priority,
         estimatedTime: this.task.estimatedTime,
+        estimatedMinutes: this.task.estimatedTime || 0,
         dueDate: (this.task as any).dueDate || '',
         tags: [...this.task.tags],
         subtasks: [...this.task.subtasks]
@@ -88,6 +91,7 @@ export class TaskFormDialogComponent implements OnChanges {
         status: this.defaultStatus,
         priority: 'medium',
         estimatedTime: 0,
+        estimatedMinutes: 0,
         dueDate: '',
         tags: [],
         subtasks: []
@@ -111,7 +115,8 @@ export class TaskFormDialogComponent implements OnChanges {
     this.taskSubmit.emit({
       ...this.formData,
       title: this.formData.title.trim(),
-      description: this.formData.description.trim()
+      description: this.formData.description.trim(),
+      estimatedTime: this.formData.estimatedMinutes || 0
     });
 
     this.closeDialog();

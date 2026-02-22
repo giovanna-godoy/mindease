@@ -176,6 +176,15 @@ body:not(.simple-ui):not(.complete-ui) app-stats-card.complexity-medium {
   transition: none !important;
 }
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
 * {
   border-color: var(--border);
   outline-color: var(--ring);

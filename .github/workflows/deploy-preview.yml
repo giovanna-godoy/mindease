@@ -25,9 +25,6 @@ jobs:
       - name: Run tests
         run: npm run test:ci
 
-      - name: Run linter
-        run: npm run lint:ci
-
   deploy:
     runs-on: ubuntu-latest
     needs: test

@@ -63,7 +63,7 @@ export class FirebaseService {
     const tasksRef = collection(this.firestore, 'tasks');
     if (task.id && task.id.startsWith('task_')) {
       const taskRef = doc(this.firestore, 'tasks', task.id);
-      await updateDoc(taskRef, { ...task, userId, updatedAt: new Date() });
+      await setDoc(taskRef, { ...task, userId, updatedAt: new Date() }, { merge: true });
       return task.id;
     } else {
       const docRef = await addDoc(tasksRef, { ...task, userId, createdAt: new Date(), updatedAt: new Date() });
