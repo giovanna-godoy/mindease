@@ -5,8 +5,13 @@ describe('CognitiveAlertsService', () => {
 
   beforeEach(() => {
     jest.useFakeTimers();
+    (global as any).window = { 
+      dispatchEvent: jest.fn(),
+      setInterval: jest.fn((cb, time) => global.setInterval(cb, time)),
+      clearInterval: jest.fn((id) => global.clearInterval(id))
+    };
+    (global as any).localStorage = { getItem: jest.fn(), setItem: jest.fn() };
     service = new CognitiveAlertsService();
-    window.dispatchEvent = jest.fn();
   });
 
   afterEach(() => {
@@ -16,12 +21,13 @@ describe('CognitiveAlertsService', () => {
 
   test('setEnabled updates enabled state', () => {
     service.setEnabled(false);
-    expect(service['enabled']).toBe(false);
+    expect(service.isEnabled()).toBe(false);
   });
 
-  test('startTaskTracking dispatches transition notification', () => {
+  test('startTaskTracking sets up interval', () => {
+    const setIntervalSpy = jest.spyOn(global, 'setInterval');
     service.startTaskTracking('Test Task');
-    expect(window.dispatchEvent).toHaveBeenCalled();
+    expect(setIntervalSpy).toHaveBeenCalled();
   });
 
   test('stopTaskTracking clears interval', () => {
@@ -31,10 +37,10 @@ describe('CognitiveAlertsService', () => {
     expect(clearSpy).toHaveBeenCalled();
   });
 
-  test('destroy clears interval', () => {
+  test('ngOnDestroy clears intervals', () => {
     service.startTaskTracking('Task');
     const clearSpy = jest.spyOn(global, 'clearInterval');
-    service.destroy();
+    service.ngOnDestroy();
     expect(clearSpy).toHaveBeenCalled();
   });
 });

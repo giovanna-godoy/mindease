@@ -1,8 +1,6 @@
-import { FirebaseService } from './firebase.service';
-
 jest.mock('firebase/app', () => ({ initializeApp: jest.fn() }));
 jest.mock('firebase/auth', () => ({
-  getAuth: jest.fn(),
+  getAuth: jest.fn(() => ({ currentUser: null, onAuthStateChanged: jest.fn() })),
   signInWithEmailAndPassword: jest.fn(),
   createUserWithEmailAndPassword: jest.fn(),
   signOut: jest.fn(),
@@ -19,15 +17,19 @@ jest.mock('firebase/firestore', () => ({
   where: jest.fn(),
   getDocs: jest.fn(),
   addDoc: jest.fn(),
+  updateDoc: jest.fn(),
   deleteDoc: jest.fn()
 }));
 jest.mock('firebase/analytics', () => ({ getAnalytics: jest.fn() }));
+
+import { FirebaseService } from './firebase.service';
 
 describe('FirebaseService', () => {
   let service: FirebaseService;
 
   beforeEach(() => {
     service = new FirebaseService();
+    service.auth = { currentUser: null, onAuthStateChanged: jest.fn() } as any;
   });
 
   test('getCurrentUser returns auth.currentUser', () => {

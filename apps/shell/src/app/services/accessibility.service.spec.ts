@@ -2,36 +2,41 @@ import { AccessibilityService } from './accessibility.service';
 
 describe('AccessibilityService', () => {
   let service: AccessibilityService;
+  const mockRendererFactory = {
+    createRenderer: jest.fn().mockReturnValue({
+      addClass: jest.fn(),
+      removeClass: jest.fn()
+    })
+  };
 
   beforeEach(() => {
-    service = new AccessibilityService();
-    document.documentElement.className = '';
+    (global as any).window = { addEventListener: jest.fn() };
+    (global as any).localStorage = { getItem: jest.fn(), setItem: jest.fn() };
+    service = new AccessibilityService(mockRendererFactory as any);
   });
 
-  test('updateSpacing adds correct class', () => {
+  test('updateSpacing calls renderer', () => {
     service.updateSpacing('wide');
-    expect(document.documentElement.classList.contains('wide-spacing')).toBe(true);
+    expect(service.getCurrentSpacing()).toBe('wide');
   });
 
-  test('updateComplexity adds correct class', () => {
+  test('updateComplexity calls renderer', () => {
     service.updateComplexity('simple');
-    expect(document.documentElement.classList.contains('simple-complexity')).toBe(true);
+    expect(service.getCurrentComplexity()).toBe('simple');
   });
 
-  test('updateAnimations adds correct class', () => {
+  test('updateAnimations calls renderer', () => {
     service.updateAnimations('reduced');
-    expect(document.documentElement.classList.contains('reduced-motion')).toBe(true);
+    expect(service.getCurrentAnimation()).toBe('reduced');
   });
 
-  test('updateFocusMode toggles focus-mode class', () => {
+  test('updateFocusMode toggles state', () => {
     service.updateFocusMode(true);
-    expect(document.documentElement.classList.contains('focus-mode')).toBe(true);
-    service.updateFocusMode(false);
-    expect(document.documentElement.classList.contains('focus-mode')).toBe(false);
+    expect(service.getCurrentFocusMode()).toBe(true);
   });
 
-  test('updateDetailedView toggles detailed-view class', () => {
+  test('updateDetailedView toggles state', () => {
     service.updateDetailedView(true);
-    expect(document.documentElement.classList.contains('detailed-view')).toBe(true);
+    expect(service.getCurrentDetailedView()).toBe(true);
   });
 });

@@ -1,3 +1,5 @@
+jest.mock('./firebase.service');
+
 import { AuthService } from './auth.service';
 import { of } from 'rxjs';
 
@@ -40,8 +42,8 @@ describe('AuthService', () => {
     });
   });
 
-  test('getCurrentUser returns firebase current user', () => {
-    mockFirebaseService.getCurrentUser.mockReturnValue({ uid: 'u3' });
+  test('getCurrentUser returns current user from subject', () => {
+    service['currentUserSubject'].next({ uid: 'u3' } as any);
     expect(service.getCurrentUser()).toEqual({ uid: 'u3' });
   });
 });

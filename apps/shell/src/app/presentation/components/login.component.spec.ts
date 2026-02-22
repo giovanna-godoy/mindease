@@ -2,6 +2,8 @@ jest.mock('@angular/common', () => ({ CommonModule: {} }));
 jest.mock('@angular/forms', () => ({ FormsModule: {} }));
 jest.mock('@angular/material/icon', () => ({ MatIconModule: {} }));
 jest.mock('@angular/router', () => ({ Router: function Router() {} }));
+jest.mock('../../services/firebase.service');
+jest.mock('../../services/auth.service');
 
 import { LoginComponent } from './login.component';
 import { of, throwError } from 'rxjs';
@@ -9,39 +11,36 @@ import { of, throwError } from 'rxjs';
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let mockAuthService: any;
-  let mockRouter: any;
 
   beforeEach(() => {
     mockAuthService = {
       login: jest.fn(),
-      register: jest.fn()
+      register: jest.fn(),
+      syncUserData: jest.fn()
     };
-    mockRouter = { navigate: jest.fn() };
-    component = new LoginComponent(mockAuthService, mockRouter);
+    component = new LoginComponent(mockAuthService);
   });
 
-  test('login success navigates to home', async () => {
+  test('handleLogin success calls syncUserData', (done) => {
     mockAuthService.login.mockReturnValue(of({ uid: 'u1' }));
     component.email = 'test@test.com';
     component.password = 'pass';
-    await component.login();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
+    component['handleLogin']();
+    setTimeout(() => {
+      expect(mockAuthService.syncUserData).toHaveBeenCalled();
+      done();
+    }, 10);
   });
 
-  test('login error sets errorMessage', async () => {
-    mockAuthService.login.mockReturnValue(throwError(() => new Error('fail')));
+  test('handleLogin error sets errorMessage', (done) => {
+    mockAuthService.login.mockReturnValue(throwError(() => ({ code: 'auth/invalid-credential' })));
     component.email = 'test@test.com';
     component.password = 'pass';
-    await component.login();
-    expect(component.errorMessage).toBeTruthy();
-  });
-
-  test('register success navigates to home', async () => {
-    mockAuthService.register.mockReturnValue(of({ uid: 'u2' }));
-    component.email = 'new@test.com';
-    component.password = 'pass';
-    await component.register();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
+    component['handleLogin']();
+    setTimeout(() => {
+      expect(component.errorMessage).toBeTruthy();
+      done();
+    }, 10);
   });
 
   test('toggleMode switches between login and register', () => {

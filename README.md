@@ -1,18 +1,10 @@
-# MindEase - Plataforma de Acessibilidade Cognitiva
+# 🧠 MindEase Mobile
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+Aplicativo mobile de produtividade com foco em acessibilidade cognitiva, desenvolvido para pessoas com TDAH, TEA, dislexia e outras necessidades específicas.
 
-**MindEase** é uma plataforma inovadora desenvolvida para apoiar pessoas com necessidades cognitivas específicas, oferecendo ferramentas personalizáveis para melhorar o foco, organização e produtividade.
+## 📋 Sobre o Projeto
 
-## 🎯 Sobre o Projeto
-
-O MindEase foi desenvolvido como solução para pessoas com TDAH, TEA (Autismo), Dislexia, Ansiedade e outras necessidades cognitivas, proporcionando:
-
-- **Interface adaptável** com controles de acessibilidade
-- **Sistema de tarefas** com método Pomodoro integrado
-- **Painel cognitivo** para personalização da experiência
-- **Perfil persistente** com configurações salvas localmente
-- **Arquitetura de micro-frontends** para modularidade
+MindEase é uma plataforma de organização e produtividade que prioriza a acessibilidade cognitiva, oferecendo interfaces personalizáveis, timers de foco (Pomodoro), e gerenciamento de tarefas adaptado às necessidades individuais.
 
 ## 🏗️ Arquitetura
 
@@ -37,7 +29,7 @@ O MindEase foi desenvolvido como solução para pessoas com TDAH, TEA (Autismo),
 
 ### Pré-requisitos
 
-- **Node.js** 18+ 
+- **Node.js** 22+ 
 - **npm** ou **yarn**
 - **Git**
 
@@ -206,42 +198,10 @@ mindease/
 └── README.md                 # Este arquivo
 ```
 
-## 🎯 Casos de Uso
-
-### Para Estudantes com TDAH
-- Configure **modo de foco** para reduzir distrações
-- Use **timer Pomodoro** para sessões de estudo estruturadas
-- Organize tarefas no **Kanban** com prioridades visuais
-- Receba **alertas cognitivos** para pausas regulares
-
-### Para Pessoas com TEA
-- Ajuste **contraste e espaçamento** para conforto visual
-- Configure **rotinas de estudo** previsíveis
-- Use **checklist de subtarefas** para quebrar atividades complexas
-- Desative **animações** se causarem desconforto
-
-### Para Pessoas com Ansiedade
-- Ative **modo de foco** para interface mais limpa
-- Configure **alertas suaves** para transições
-- Use **visualização detalhada** opcional
-- Personalize **necessidades específicas** no perfil
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
-4. Push para a branch (`git push origin feature/nova-feature`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
 ## 👥 Equipe
 
-Desenvolvido com ❤️ para tornar a tecnologia mais acessível e inclusiva.
+Desenvolvido por Giovanna G. Lorente
 
 ---
 
-**MindEase** - *Facilitando o foco, organizando a mente* 🧠✨
+**MindEase** - Produtividade acessível para todos 🧠✨
