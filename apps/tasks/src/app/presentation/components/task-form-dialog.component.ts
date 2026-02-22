@@ -102,16 +102,10 @@ export class TaskFormDialogComponent implements OnChanges {
   }
 
   onSubmit(): void {
-    console.log('onSubmit chamado');
-    console.log('formData:', this.formData);
-    console.log('title:', this.formData.title);
-    
     if (!this.formData.title.trim()) {
-      console.log('Título vazio, não enviando');
       return;
     }
 
-    console.log('Emitindo taskSubmit');
     this.taskSubmit.emit({
       ...this.formData,
       title: this.formData.title.trim(),

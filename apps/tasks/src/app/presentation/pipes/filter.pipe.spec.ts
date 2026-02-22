@@ -13,9 +13,9 @@ describe('FilterPipe', () => {
 
   it('should filter tasks by status', () => {
     const tasks = [
-      { id: '1', status: 'todo', title: 'Task 1' },
-      { id: '2', status: 'in_progress', title: 'Task 2' },
-      { id: '3', status: 'todo', title: 'Task 3' }
+      { id: '1', status: 'todo', title: 'Task 1' } as any,
+      { id: '2', status: 'in_progress', title: 'Task 2' } as any,
+      { id: '3', status: 'todo', title: 'Task 3' } as any
     ];
 
     const result = pipe.transform(tasks, 'todo');
@@ -26,10 +26,15 @@ describe('FilterPipe', () => {
 
   it('should return empty array when no tasks match', () => {
     const tasks = [
-      { id: '1', status: 'todo', title: 'Task 1' }
+      { id: '1', status: 'todo', title: 'Task 1' } as any
     ];
 
     const result = pipe.transform(tasks, 'done');
+    expect(result.length).toBe(0);
+  });
+
+  it('should return empty array when tasks is null', () => {
+    const result = pipe.transform(null as any, 'todo');
     expect(result.length).toBe(0);
   });
 });

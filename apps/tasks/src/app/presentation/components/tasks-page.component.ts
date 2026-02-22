@@ -62,11 +62,9 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       if (firebaseService) {
         const user = await firebaseService.waitForUser();
         if (user) {
-          console.log('Carregando tarefas para usuário:', user.email);
           try {
             const tasks = await firebaseService.getUserTasks(user.uid);
             this.tasks = tasks || [];
-            console.log('Tarefas carregadas:', this.tasks.length);
             this.cdr.markForCheck();
           } catch (error) {
             console.error('Erro ao carregar tarefas:', error);
@@ -84,16 +82,13 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       if (firebaseService) {
         const user = firebaseService.getCurrentUser();
         if (user) {
-          console.log('Salvando', this.tasks.length, 'tarefas para:', user.email);
           await firebaseService.saveTasks(user.uid, this.tasks);
-          console.log('Tarefas salvas com sucesso');
         }
       }
     }
   }
 
   async refreshTasks(): Promise<void> {
-    console.log('Forçando atualização das tarefas...');
     await this.loadTasks();
     this.showSuccessMessage('Tarefas atualizadas!');
   }
@@ -126,13 +121,10 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   }
 
   async onTaskSubmit(taskData: any): Promise<void> {
-    console.log('onTaskSubmit recebido:', taskData);
     const firebaseService = (window as any).firebaseService;
     const user = firebaseService?.getCurrentUser();
     
-    console.log('User:', user);
     if (!user) {
-      console.error('Usuário não encontrado');
       this.showErrorMessage('Erro: Usuário não autenticado');
       return;
     }
@@ -141,13 +133,11 @@ export class TasksPageComponent implements OnInit, OnDestroy {
     this.cdr.markForCheck();
     try {
       if (this.dialogTask) {
-        console.log('Atualizando tarefa existente');
         const updatedTask = { ...this.dialogTask, ...taskData, updatedAt: new Date() };
         await firebaseService.saveTask(user.uid, updatedTask);
         await this.loadTasks();
         this.showSuccessMessage('Tarefa atualizada com sucesso!');
       } else {
-        console.log('Criando nova tarefa');
         const newTask: Task = {
           id: 'task_' + Date.now(),
           ...taskData,
@@ -155,9 +145,7 @@ export class TasksPageComponent implements OnInit, OnDestroy {
           createdAt: new Date(),
           updatedAt: new Date()
         };
-        console.log('Nova tarefa:', newTask);
         const taskId = await firebaseService.saveTask(user.uid, newTask);
-        console.log('Task ID retornado:', taskId);
         newTask.id = taskId;
         this.tasks.push(newTask);
         this.showSuccessMessage('Tarefa criada com sucesso!');

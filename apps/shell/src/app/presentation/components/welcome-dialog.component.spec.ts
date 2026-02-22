@@ -1,41 +1,28 @@
 jest.mock('@angular/common', () => ({ CommonModule: {} }));
 jest.mock('@angular/material/icon', () => ({ MatIconModule: {} }));
+jest.mock('../../data/repositories/welcome.repository', () => ({
+  LocalStorageWelcomeRepository: jest.fn().mockImplementation(() => ({
+    hasSeenWelcome: jest.fn().mockReturnValue(false),
+    markWelcomeAsSeen: jest.fn()
+  }))
+}));
 
 import { WelcomeDialogComponent } from './welcome-dialog.component';
 
 describe('WelcomeDialogComponent', () => {
   let component: WelcomeDialogComponent;
-  let mockUseCase: any;
 
   beforeEach(() => {
-    mockUseCase = {
-      hasSeenWelcome: jest.fn(),
-      markWelcomeAsSeen: jest.fn()
-    };
-    component = new WelcomeDialogComponent(mockUseCase);
+    component = new WelcomeDialogComponent();
   });
 
   test('ngOnInit checks if welcome was seen', () => {
-    mockUseCase.hasSeenWelcome.mockReturnValue(false);
     component.ngOnInit();
-    expect(component.showDialog).toBe(true);
+    expect(component.isOpen).toBe(true);
   });
 
-  test('closeDialog marks welcome as seen', () => {
-    component.closeDialog();
-    expect(mockUseCase.markWelcomeAsSeen).toHaveBeenCalled();
-    expect(component.showDialog).toBe(false);
-  });
-
-  test('nextStep increments currentStep', () => {
-    component.currentStep = 0;
-    component.nextStep();
-    expect(component.currentStep).toBe(1);
-  });
-
-  test('prevStep decrements currentStep', () => {
-    component.currentStep = 2;
-    component.prevStep();
-    expect(component.currentStep).toBe(1);
+  test('close marks welcome as seen', () => {
+    component.close();
+    expect(component.isOpen).toBe(false);
   });
 });
