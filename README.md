@@ -1,6 +1,6 @@
-# 🧠 MindEase Mobile
+# 🧠 MindEase
 
-Aplicativo mobile de produtividade com foco em acessibilidade cognitiva, desenvolvido para pessoas com TDAH, TEA, dislexia e outras necessidades específicas.
+Aplicativo de produtividade com foco em acessibilidade cognitiva, desenvolvido para pessoas com TDAH, TEA, dislexia e outras necessidades específicas.
 
 ## 📋 Sobre o Projeto
 
