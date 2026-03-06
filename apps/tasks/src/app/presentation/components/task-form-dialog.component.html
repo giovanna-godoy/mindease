@@ -1,12 +1,12 @@
-<div class="dialog-overlay" *ngIf="isOpen" (click)="onOverlayClick($event)">
-  <div class="dialog-content" (click)="$event.stopPropagation()">
+<div class="dialog-overlay" *ngIf="isOpen" (click)="onOverlayClick($event)" role="dialog" aria-modal="true" [attr.aria-labelledby]="'dialog-title'" [attr.aria-describedby]="'dialog-description'">
+  <div focusTrap class="dialog-content" (click)="$event.stopPropagation()">
     <div class="dialog-header">
-      <h2 class="dialog-title">{{ task ? 'Editar Tarefa' : 'Nova Tarefa' }}</h2>
-      <p class="dialog-description">
+      <h2 id="dialog-title" class="dialog-title">{{ task ? 'Editar Tarefa' : 'Nova Tarefa' }}</h2>
+      <p id="dialog-description" class="dialog-description">
         {{ task ? 'Atualize as informações da sua tarefa' : 'Adicione uma nova tarefa ao seu organizador' }}
       </p>
-      <button type="button" class="dialog-close" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
+      <button type="button" class="dialog-close" (click)="closeDialog()" aria-label="Fechar diálogo">
+        <mat-icon aria-hidden="true">close</mat-icon>
       </button>
     </div>
 
@@ -59,13 +59,16 @@
       <!-- Priority and Minutes -->
       <div class="form-row">
         <div class="form-group">
-          <label>Prioridade</label>
-          <div class="priority-buttons">
+          <label id="priority-label">Prioridade</label>
+          <div class="priority-buttons" role="group" aria-labelledby="priority-label">
             <button
               type="button"
               class="priority-btn"
               [class.active]="formData.priority === 'low'"
               (click)="formData.priority = 'low'"
+              role="radio"
+              [attr.aria-checked]="formData.priority === 'low'"
+              aria-label="Prioridade baixa"
             >
               Baixa
             </button>
@@ -74,6 +77,9 @@
               class="priority-btn"
               [class.active]="formData.priority === 'medium'"
               (click)="formData.priority = 'medium'"
+              role="radio"
+              [attr.aria-checked]="formData.priority === 'medium'"
+              aria-label="Prioridade média"
             >
               Média
             </button>
@@ -82,6 +88,9 @@
               class="priority-btn"
               [class.active]="formData.priority === 'high'"
               (click)="formData.priority = 'high'"
+              role="radio"
+              [attr.aria-checked]="formData.priority === 'high'"
+              aria-label="Prioridade alta"
             >
               Alta
             </button>
@@ -104,32 +113,37 @@
 
       <!-- Subtasks -->
       <div class="form-group" *ngIf="task">
-        <label>Subtarefas</label>
+        <label for="newSubtask">Subtarefas</label>
         <div class="subtask-input-container">
           <input
+            id="newSubtask"
             type="text"
             [(ngModel)]="newSubtask"
             name="newSubtask"
             placeholder="Nova subtarefa..."
             class="form-input"
+            aria-label="Adicionar nova subtarefa"
           />
           <button
             type="button"
             class="subtask-add-btn"
             (click)="addSubtask($event)"
+            aria-label="Confirmar adição de subtarefa"
           >
-            <mat-icon>check</mat-icon>
+            <mat-icon aria-hidden="true">check</mat-icon>
           </button>
         </div>
-        <div class="subtasks-list" *ngIf="formData.subtasks.length > 0">
-          <div *ngFor="let subtask of formData.subtasks" class="subtask-item">
+        <div class="subtasks-list" *ngIf="formData.subtasks.length > 0" role="list" aria-label="Lista de subtarefas">
+          <div *ngFor="let subtask of formData.subtasks" class="subtask-item" role="listitem">
             <input
               type="checkbox"
               [(ngModel)]="subtask.completed"
               [name]="'subtask-' + subtask.id"
+              [id]="'subtask-' + subtask.id"
               class="subtask-checkbox"
+              [attr.aria-label]="'Marcar subtarefa ' + subtask.title + ' como ' + (subtask.completed ? 'incompleta' : 'completa')"
             />
-            <span [class.completed]="subtask.completed">{{ subtask.title }}</span>
+            <label [for]="'subtask-' + subtask.id" [class.completed]="subtask.completed">{{ subtask.title }}</label>
           </div>
         </div>
         <p *ngIf="formData.subtasks.length === 0" class="text-sm" style="color: #6B7280;">Nenhuma subtarefa adicionada</p>

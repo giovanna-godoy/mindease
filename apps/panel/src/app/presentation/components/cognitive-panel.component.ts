@@ -41,6 +41,8 @@ export class CognitivePanelComponent implements OnInit {
     showDetailedView: false,
   };
 
+  isLoading = true;
+  isSaving = false;
   private subscription?: Subscription;
 
   constructor(private router: Router, private cdr: ChangeDetectorRef) {}
@@ -55,6 +57,7 @@ export class CognitivePanelComponent implements OnInit {
   }
 
   async loadSettings(): Promise<void> {
+    this.isLoading = true;
     if (typeof window !== 'undefined') {
       const firebaseService = (window as any).firebaseService;
       if (firebaseService) {
@@ -73,6 +76,8 @@ export class CognitivePanelComponent implements OnInit {
         }
       }
     }
+    this.isLoading = false;
+    this.cdr.detectChanges();
   }
 
   contrastOptions: Option[] = [
@@ -147,10 +152,10 @@ export class CognitivePanelComponent implements OnInit {
     this.settings = { ...this.settings, ...partial };
     this.applySettings();
     this.saveSettings();
-    this.showSuccessMessage();
   }
 
   async saveSettings(): Promise<void> {
+    this.isSaving = true;
     if (typeof window !== 'undefined') {
       const firebaseService = (window as any).firebaseService;
       if (firebaseService) {
@@ -158,12 +163,15 @@ export class CognitivePanelComponent implements OnInit {
         if (user) {
           try {
             await firebaseService.saveSettings(user.uid, this.settings);
+            this.showSuccessMessage();
           } catch (error) {
             console.error('Error saving settings:', error);
           }
         }
       }
     }
+    this.isSaving = false;
+    this.cdr.detectChanges();
   }
 
   toggleFocusMode(): void {

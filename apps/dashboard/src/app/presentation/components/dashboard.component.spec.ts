@@ -26,9 +26,10 @@ describe('DashboardComponent', () => {
     expect(comp.completionPercentage).toBe(50);
   });
 
-  test('getPriorityColor returns correct hex', () => {
-    expect(comp.getPriorityColor('high')).toBe('#EF4444');
-    expect(comp.getPriorityColor('medium')).toBe('#F59E0B');
+  test('getPriorityColor returns correct CSS variable', () => {
+    expect(comp.getPriorityColor('high')).toBe('var(--priority-high)');
+    expect(comp.getPriorityColor('medium')).toBe('var(--priority-medium)');
+    expect(comp.getPriorityColor('low')).toBe('var(--priority-low)');
   });
 
   test('testNotification dispatches event', () => {

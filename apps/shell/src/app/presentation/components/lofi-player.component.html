@@ -1,32 +1,25 @@
-<div #playerElement class="lofi-player">
+<div #playerElement class="lofi-player" role="region" aria-label="Player de música Lo-fi">
   <div class="player-header">
-    <mat-icon class="music-icon drag-handle">drag_indicator</mat-icon>
-    <h3>Playlist Lo-fi</h3>
+    <mat-icon class="music-icon drag-handle" aria-hidden="true">drag_indicator</mat-icon>
+    <h3 id="player-title">Playlist Lo-fi</h3>
   </div>
   
-  <div class="player-controls">
-    <button class="control-btn" (click)="togglePlay()">
-      <mat-icon>{{ isPlaying() ? 'pause' : 'play_arrow' }}</mat-icon>
+  <div class="player-controls" role="group" aria-labelledby="player-title">
+    <button class="control-btn" (click)="togglePlay()" [attr.aria-label]="isPlaying() ? 'Pausar música' : 'Reproduzir música'">
+      <mat-icon aria-hidden="true">{{ isPlaying() ? 'pause' : 'play_arrow' }}</mat-icon>
     </button>
     
-    <div class="track-info">
+    <div class="track-info" aria-live="polite" aria-atomic="true">
       <span class="track-name">{{ currentTrack().name }}</span>
     </div>
     
-    <button class="control-btn" (click)="nextTrack()">
-      <mat-icon>skip_next</mat-icon>
+    <button class="control-btn" (click)="nextTrack()" aria-label="Próxima faixa">
+      <mat-icon aria-hidden="true">skip_next</mat-icon>
     </button>
   </div>
   
   <div class="volume-control">
-    <mat-icon class="volume-icon">volume_up</mat-icon>
-    <input 
-      type="range" 
-      min="0" 
-      max="100" 
-      [value]="volume()"
-      (input)="setVolume($event)"
-      class="volume-slider"
-    />
+    <mat-icon class="volume-icon" aria-hidden="true">volume_up</mat-icon>
+    <input type="range" min="0" max="100" [value]="volume()" (input)="setVolume($event)" class="volume-slider" aria-label="Controle de volume" [attr.aria-valuenow]="volume()" aria-valuemin="0" aria-valuemax="100" />
   </div>
 </div>

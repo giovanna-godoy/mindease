@@ -39,6 +39,14 @@
   --chart-5: #E1D4F0;
   --radius: 0.75rem;
   
+  /* Cores WCAG AA Compliant */
+  --priority-high: #EF4444;
+  --priority-medium: #D97706;
+  --priority-low: #059669;
+  --success-color: #059669;
+  --info-color: #3B82F6;
+  --warning-color: #D97706;
+  
   /* Variáveis de acessibilidade cognitiva */
   --spacing-multiplier: 1;
   --contrast-level: 1;

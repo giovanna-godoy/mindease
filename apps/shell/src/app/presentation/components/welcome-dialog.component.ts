@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { WelcomeUseCase } from '../../domain/usecases/welcome.usecase';
 import { LocalStorageWelcomeRepository } from '../../data/repositories/welcome.repository';
+import { FocusTrapDirective } from '../../directives/focus-trap.directive';
 
 @Component({
   selector: 'app-welcome-dialog',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule, FocusTrapDirective],
   templateUrl: './welcome-dialog.component.html',
 })
 export class WelcomeDialogComponent implements OnInit {

@@ -1,23 +1,47 @@
-// Mock Angular modules and local imports to allow instantiating the class without the Angular linker/JIT
+// Mock Angular modules and local imports
 jest.mock('@angular/common', () => ({ CommonModule: {} }));
 jest.mock('@angular/forms', () => ({ FormsModule: {} }));
 jest.mock('@angular/material/icon', () => ({ MatIconModule: {} }));
 jest.mock('../pipes/filter.pipe', () => ({ FilterPipe: {} }));
 jest.mock('./task-form-dialog.component', () => ({ TaskFormDialogComponent: {} }));
+jest.mock('./empty-state.component', () => ({ EmptyStateComponent: {} }));
 jest.mock('@angular/router', () => ({ Router: function Router() {}, NavigationEnd: function NavigationEnd() {} }));
 
-import { TasksPageComponent, Task, Subtask } from './tasks-page.component';
+import { TasksPageComponent } from './tasks-page.component';
+import { Task } from '../../types/task.types';
 
 describe('TasksPageComponent (unit)', () => {
   let component: TasksPageComponent;
   const mockRouter: any = { events: { subscribe: () => ({ unsubscribe: () => {} }) } };
   const mockCdr: any = { markForCheck: jest.fn() };
+  const mockTasksService: any = {
+    loadTasks: jest.fn().mockResolvedValue([]),
+    saveTask: jest.fn().mockResolvedValue(true),
+    deleteTask: jest.fn().mockResolvedValue(true),
+    updateTaskStatus: jest.fn().mockResolvedValue(true),
+    addSubtask: jest.fn().mockResolvedValue(true),
+    getNextStatus: jest.fn().mockReturnValue('in_progress'),
+    getStatusName: jest.fn().mockReturnValue('Em Progresso'),
+    getPriorityColor: jest.fn((priority: string) => {
+      switch (priority) {
+        case 'high': return '#EF4444';
+        case 'medium': return '#F59E0B';
+        case 'low': return '#3B82F6';
+        default: return '#6B7280';
+      }
+    }),
+    getCompletedSubtasksCount: jest.fn((subtasks: any[]) => subtasks.filter(s => s.completed).length),
+    notifyTasksUpdated: jest.fn()
+  };
+  const mockNotificationService: any = {
+    showSuccess: jest.fn(),
+    showError: jest.fn(),
+    showInfo: jest.fn()
+  };
 
   beforeEach(() => {
-    component = new TasksPageComponent(mockRouter as any, mockCdr as any);
-    // reset DOM event listeners
-    (global as any).window = (global as any).window || {};
-    (global as any).window.dispatchEvent = jest.fn();
+    component = new TasksPageComponent(mockRouter as any, mockCdr as any, mockTasksService as any, mockNotificationService as any);
+    jest.clearAllMocks();
   });
 
   test('getPriorityColor returns correct colors', () => {
@@ -28,7 +52,7 @@ describe('TasksPageComponent (unit)', () => {
   });
 
   test('subtasks helpers', () => {
-    const task: Task = { id: 't1', title: 't', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [{ id: 's1', title: 's', completed: true }], tags: [] };
+    const task: Task = { id: 't1', title: 't', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [{ id: 's1', title: 's', completed: true }], tags: [], createdAt: new Date(), updatedAt: new Date() };
     expect(component.getTotalSubtasks(task)).toBe(1);
     expect(component.getCompletedSubtasks(task)).toBe(1);
   });
@@ -42,8 +66,8 @@ describe('TasksPageComponent (unit)', () => {
 
   test('getTaskCountByStatus counts correctly', () => {
     component.tasks = [
-      { id: '1', title: 'a', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [] },
-      { id: '2', title: 'b', description: '', status: 'in_progress', priority: 'low', estimatedTime: 0, subtasks: [], tags: [] },
+      { id: '1', title: 'a', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [], createdAt: new Date(), updatedAt: new Date() },
+      { id: '2', title: 'b', description: '', status: 'in_progress', priority: 'low', estimatedTime: 0, subtasks: [], tags: [], createdAt: new Date(), updatedAt: new Date() },
     ];
     expect(component.getTaskCountByStatus('todo')).toBe(1);
     expect(component.getTaskCountByStatus('in_progress')).toBe(1);
@@ -51,156 +75,100 @@ describe('TasksPageComponent (unit)', () => {
   });
 
   test('addSubtask does nothing when newSubtaskTitle empty', async () => {
-    const task: Task = { id: '1', title: 'a', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [] };
-    component.tasks = [task];
+    const task: Task = { id: '1', title: 'a', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [], createdAt: new Date(), updatedAt: new Date() };
     component.newSubtaskTitle = '   ';
     await component.addSubtask(task);
-    expect(component.tasks[0].subtasks?.length).toBe(0);
+    expect(mockTasksService.addSubtask).not.toHaveBeenCalled();
   });
 
-  test('addSubtask adds subtask and calls firebase saveTask', async () => {
-    const task: Task = { id: '1', title: 'a', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [] };
-    component.tasks = [task];
+  test('addSubtask adds subtask successfully', async () => {
+    const task: Task = { id: '1', title: 'a', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [], createdAt: new Date(), updatedAt: new Date() };
     component.newSubtaskTitle = 'New Sub';
-
-    const saveTask = jest.fn().mockResolvedValue(true);
-    const getCurrentUser = jest.fn().mockReturnValue({ uid: 'u1' });
-
-    (global as any).window.firebaseService = { saveTask, getCurrentUser };
     jest.spyOn(component, 'loadTasks').mockImplementation(async () => {});
 
     await component.addSubtask(task);
 
-    expect(saveTask).toHaveBeenCalled();
+    expect(mockTasksService.addSubtask).toHaveBeenCalled();
+    expect(mockNotificationService.showSuccess).toHaveBeenCalled();
     expect(component.newSubtaskTitle).toBe('');
   });
 
-  test('toggleTaskStatus cycles status and calls saveTask when user present', async () => {
-    const t: Task = { id: 't1', title: 'x', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [] };
-    component.tasks = [t];
-
-    const saveTask = jest.fn().mockResolvedValue(true);
-    (global as any).window.firebaseService = { saveTask, getCurrentUser: () => ({ uid: 'u1' }) };
+  test('toggleTaskStatus updates status', async () => {
+    const t: Task = { id: 't1', title: 'x', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [], createdAt: new Date(), updatedAt: new Date() };
     jest.spyOn(component, 'loadTasks').mockImplementation(async () => {});
 
     await component.toggleTaskStatus(t);
 
-    expect(saveTask).toHaveBeenCalled();
-    expect(component.tasks[0].status).not.toBe('todo');
+    expect(mockTasksService.getNextStatus).toHaveBeenCalled();
+    expect(mockTasksService.updateTaskStatus).toHaveBeenCalled();
+    expect(mockNotificationService.showSuccess).toHaveBeenCalled();
   });
 
-  test('deleteTask handles missing user by clearing deletingTaskId', async () => {
-    const t: Task = { id: 't1', title: 'x', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [] };
-    component.tasks = [t];
-    (global as any).window.firebaseService = { getCurrentUser: () => null };
+  test('deleteTask success path', async () => {
+    const t: Task = { id: 't1', title: 'x', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [], createdAt: new Date(), updatedAt: new Date() };
+    jest.spyOn(component, 'loadTasks').mockImplementation(async () => {});
 
-    await component.deleteTask(t, undefined as any);
+    await component.deleteTask(t, { stopPropagation: () => {} } as any);
+    
+    expect(mockTasksService.deleteTask).toHaveBeenCalled();
+    expect(mockNotificationService.showSuccess).toHaveBeenCalled();
     expect(component.deletingTaskId).toBeNull();
   });
 
-  test('getPriorityColor default case', () => {
-    // already covered earlier but keep to ensure branch
-    expect(component.getPriorityColor('')).toBe('#6B7280');
-  });
-
-  test('loadTasks sets tasks when firebase returns tasks', async () => {
-    const tasksMock = [{ id: 'a', title: 'A', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [] }];
-    const waitForUser = jest.fn().mockResolvedValue({ uid: 'u1', email: 'e' });
-    const getUserTasks = jest.fn().mockResolvedValue(tasksMock);
-    (global as any).window.firebaseService = { waitForUser, getUserTasks };
+  test('loadTasks sets tasks', async () => {
+    const tasksMock = [{ id: 'a', title: 'A', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [], createdAt: new Date(), updatedAt: new Date() }];
+    mockTasksService.loadTasks.mockResolvedValue(tasksMock);
 
     await component.loadTasks();
+    
     expect(component.tasks).toEqual(tasksMock);
   });
 
-  test('loadTasks handles errors and sets tasks empty', async () => {
-    const waitForUser = jest.fn().mockResolvedValue({ uid: 'u1' });
-    const getUserTasks = jest.fn().mockRejectedValue(new Error('fail'));
-    (global as any).window.firebaseService = { waitForUser, getUserTasks };
-
-    await component.loadTasks();
-    expect(component.tasks).toEqual([]);
-  });
-
-  test('saveTasks calls firebase.saveTasks when user present', async () => {
-    component.tasks = [{ id: '1', title: 't', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [] }];
-    const saveTasks = jest.fn().mockResolvedValue(true);
-    const getCurrentUser = jest.fn().mockReturnValue({ uid: 'u1', email: 'e' });
-    (global as any).window.firebaseService = { saveTasks, getCurrentUser };
-
-    await component.saveTasks();
-    expect(saveTasks).toHaveBeenCalledWith('u1', component.tasks);
-  });
-
-  test('refreshTasks calls loadTasks and showSuccessMessage', async () => {
+  test('refreshTasks calls loadTasks and shows success', async () => {
     const loadSpy = jest.spyOn(component, 'loadTasks').mockImplementation(async () => {});
-    (component as any).showSuccessMessage = jest.fn();
+    
     await component.refreshTasks();
+    
     expect(loadSpy).toHaveBeenCalled();
-    expect((component as any).showSuccessMessage).toHaveBeenCalled();
+    expect(mockNotificationService.showSuccess).toHaveBeenCalled();
   });
 
-  test('onTaskSubmit shows error when no user', async () => {
-    (global as any).window.firebaseService = { getCurrentUser: () => null };
-    (component as any).showErrorMessage = jest.fn();
-    await component.onTaskSubmit({ title: 't' } as any);
-    expect((component as any).showErrorMessage).toHaveBeenCalled();
-  });
-
-  test('onTaskSubmit creates new task when no dialogTask', async () => {
-    const saveTask = jest.fn().mockResolvedValue('newId');
-    const getCurrentUser = jest.fn().mockReturnValue({ uid: 'u1' });
-    (global as any).window.firebaseService = { saveTask, getCurrentUser };
+  test('onTaskSubmit creates new task', async () => {
     jest.spyOn(component, 'loadTasks').mockImplementation(async () => {});
-    (component as any).showSuccessMessage = jest.fn();
 
     await component.onTaskSubmit({ title: 'Task', description: '' } as any);
-    expect(saveTask).toHaveBeenCalled();
-    expect((component as any).showSuccessMessage).toHaveBeenCalled();
+    
+    expect(mockTasksService.saveTask).toHaveBeenCalled();
+    expect(mockNotificationService.showSuccess).toHaveBeenCalled();
   });
 
-  test('onDrop moves task and triggers cognitive alerts when needed', async () => {
-    const task: Task = { id: 't1', title: 'x', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [] };
+  test('onDrop moves task', async () => {
+    const task: Task = { id: 't1', title: 'x', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [], createdAt: new Date(), updatedAt: new Date() };
     component.draggedTask = task;
-    component.tasks = [task];
-
-    const saveTask = jest.fn().mockResolvedValue(true);
-    const getCurrentUser = jest.fn().mockReturnValue({ uid: 'u1' });
-    const cognitiveAlerts = { startTaskTracking: jest.fn(), stopTaskTracking: jest.fn() };
-    (global as any).window.firebaseService = { saveTask, getCurrentUser };
-    (global as any).window.cognitiveAlertsService = cognitiveAlerts;
     jest.spyOn(component, 'loadTasks').mockImplementation(async () => {});
 
     const ev: any = { preventDefault: jest.fn() };
     await component.onDrop(ev as any, 'in_progress');
-    expect(saveTask).toHaveBeenCalled();
-    expect(cognitiveAlerts.startTaskTracking).toHaveBeenCalled();
+    
+    expect(mockTasksService.updateTaskStatus).toHaveBeenCalled();
+    expect(mockNotificationService.showSuccess).toHaveBeenCalled();
   });
 
-  test('deleteTask success path', async () => {
-    const t: Task = { id: 't1', title: 'x', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [] };
-    component.tasks = [t];
-    const deleteTask = jest.fn().mockResolvedValue(true);
-    const getCurrentUser = jest.fn().mockReturnValue({ uid: 'u1' });
-    (global as any).window.firebaseService = { deleteTask, getCurrentUser };
-    jest.spyOn(component, 'loadTasks').mockImplementation(async () => {});
-    (component as any).showSuccessMessage = jest.fn();
-
-    await component.deleteTask(t, { stopPropagation: () => {} } as any);
-    expect(deleteTask).toHaveBeenCalled();
-    expect((component as any).showSuccessMessage).toHaveBeenCalled();
-    expect(component.deletingTaskId).toBeNull();
-  });
-
-  test('onDragStart and onDragOver set dataTransfer properties', () => {
-    const t: Task = { id: 't2', title: 'y', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [] };
-    const dt: any = { effectAllowed: '', dropEffect: '' };
+  test('onDragStart sets draggedTask', () => {
+    const t: Task = { id: 't2', title: 'y', description: '', status: 'todo', priority: 'low', estimatedTime: 0, subtasks: [], tags: [], createdAt: new Date(), updatedAt: new Date() };
+    const dt: any = { effectAllowed: '' };
     const evStart: any = { dataTransfer: dt };
+    
     component.onDragStart(evStart as any, t);
+    
     expect(component['draggedTask']).toBe(t);
+  });
 
+  test('onDragOver prevents default', () => {
     const evOver: any = { preventDefault: jest.fn(), dataTransfer: { dropEffect: '' } };
+    
     component.onDragOver(evOver as any);
+    
     expect(evOver.preventDefault).toHaveBeenCalled();
   });
 });

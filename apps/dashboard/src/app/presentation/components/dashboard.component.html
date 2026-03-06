@@ -1,70 +1,76 @@
-<div class="p-4 md:p-6 space-y-4 md:space-y-6 max-w-7xl mx-auto">
+<div class="p-4 md:p-6 space-y-4 md:space-y-6 max-w-7xl mx-auto" role="main" aria-label="Dashboard principal">
   <!-- Test Notifications Button (Presentation Mode) -->
-  <div *ngIf="presentationMode" class="fixed bottom-6 left-6 z-50 flex gap-2">
-    <button (click)="testAllNotifications()" class="px-4 py-2 rounded-lg font-medium flex items-center gap-2 shadow-lg" [style.backgroundColor]="'var(--primary)'" [style.color]="'white'">
-      <mat-icon class="material-icons-rounded">notifications_active</mat-icon>
+  <div *ngIf="presentationMode" class="fixed bottom-6 left-6 z-50 flex gap-2" role="toolbar" aria-label="Ferramentas de teste de notificações">
+    <button (click)="testAllNotifications()" class="px-4 py-2 rounded-lg font-medium flex items-center gap-2 shadow-lg" [style.backgroundColor]="'var(--primary)'" [style.color]="'white'" aria-label="Testar todos os tipos de alertas">
+      <mat-icon class="material-icons-rounded" aria-hidden="true">notifications_active</mat-icon>
       Testar Todos os Alertas
     </button>
-    <button (click)="testNotification('info')" class="px-3 py-2 rounded-lg" [style.backgroundColor]="'#3B82F6'" [style.color]="'white'" title="Info">
-      <mat-icon class="material-icons-rounded">info</mat-icon>
+    <button (click)="testNotification('info')" class="px-3 py-2 rounded-lg" [style.backgroundColor]="'var(--info-color)'" [style.color]="'white'" aria-label="Testar notificação de informação">
+      <mat-icon class="material-icons-rounded" aria-hidden="true">info</mat-icon>
     </button>
-    <button (click)="testNotification('success')" class="px-3 py-2 rounded-lg" [style.backgroundColor]="'#10B981'" [style.color]="'white'" title="Success">
-      <mat-icon class="material-icons-rounded">check_circle</mat-icon>
+    <button (click)="testNotification('success')" class="px-3 py-2 rounded-lg" [style.backgroundColor]="'var(--success-color)'" [style.color]="'white'" aria-label="Testar notificação de sucesso">
+      <mat-icon class="material-icons-rounded" aria-hidden="true">check_circle</mat-icon>
     </button>
-    <button (click)="testNotification('warning')" class="px-3 py-2 rounded-lg" [style.backgroundColor]="'#F59E0B'" [style.color]="'white'" title="Warning">
-      <mat-icon class="material-icons-rounded">warning</mat-icon>
+    <button (click)="testNotification('warning')" class="px-3 py-2 rounded-lg" [style.backgroundColor]="'var(--warning-color)'" [style.color]="'white'" aria-label="Testar notificação de aviso">
+      <mat-icon class="material-icons-rounded" aria-hidden="true">warning</mat-icon>
     </button>
-    <button (click)="testNotification('transition')" class="px-3 py-2 rounded-lg" [style.backgroundColor]="'var(--primary)'" [style.color]="'white'" title="Transition">
-      <mat-icon class="material-icons-rounded">swap_horiz</mat-icon>
+    <button (click)="testNotification('transition')" class="px-3 py-2 rounded-lg" [style.backgroundColor]="'var(--primary)'" [style.color]="'white'" aria-label="Testar notificação de transição">
+      <mat-icon class="material-icons-rounded" aria-hidden="true">swap_horiz</mat-icon>
     </button>
   </div>
 
   <!-- Welcome Section -->
-  <div>
+  <header>
     <h1 class="flex items-center gap-2 text-xl md:text-2xl font-bold">
-      <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">psychology</mat-icon>
+      <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'" aria-hidden="true">psychology</mat-icon>
       Olá, Estudante!
     </h1>
     <p class="text-muted-foreground mt-1 text-sm md:text-base" [style.color]="'var(--muted-foreground)'">
       Bem-vindo à sua área de trabalho MindEase
     </p>
-  </div>
+  </header>
 
   <!-- Stats Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-    <app-stats-card
-      title="Total de Tarefas"
-      [value]="totalTasks"
-      icon="list_alt"
-      [description]="todoTasks + ' a fazer · ' + inProgressTasks + ' em progresso'"
-    ></app-stats-card>
+  <section aria-label="Estatísticas de tarefas">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4" role="list">
+      <app-stats-card
+        title="Total de Tarefas"
+        [value]="totalTasks"
+        icon="list_alt"
+        [description]="todoTasks + ' a fazer · ' + inProgressTasks + ' em progresso'"
+        role="listitem"
+      ></app-stats-card>
 
-    <app-stats-card
-      title="Concluídas"
-      [value]="doneTasks"
-      icon="check_circle"
-      valueColor="#10B981"
-      [description]="completionPercentage + '% de conclusão'"
-      [showProgress]="true"
-      [progressValue]="completionPercentage"
-    ></app-stats-card>
+      <app-stats-card
+        title="Concluídas"
+        [value]="doneTasks"
+        icon="check_circle"
+        valueColor="var(--success-color)"
+        [description]="completionPercentage + '% de conclusão'"
+        [showProgress]="true"
+        [progressValue]="completionPercentage"
+        role="listitem"
+      ></app-stats-card>
 
-    <app-stats-card
-      title="Alta Prioridade"
-      [value]="highPriorityTasks"
-      icon="priority_high"
-      valueColor="#EF4444"
-      description="Tarefas que requerem atenção urgente"
-    ></app-stats-card>
+      <app-stats-card
+        title="Alta Prioridade"
+        [value]="highPriorityTasks"
+        icon="priority_high"
+        valueColor="var(--priority-high)"
+        description="Tarefas que requerem atenção urgente"
+        role="listitem"
+      ></app-stats-card>
 
-    <app-stats-card
-      title="Em Progresso"
-      [value]="inProgressTasks"
-      icon="pending"
-      valueColor="#3B82F6"
-      description="Tarefas sendo trabalhadas"
-    ></app-stats-card>
-  </div>
+      <app-stats-card
+        title="Em Progresso"
+        [value]="inProgressTasks"
+        icon="pending"
+        valueColor="var(--info-color)"
+        description="Tarefas sendo trabalhadas"
+        role="listitem"
+      ></app-stats-card>
+    </div>
+  </section>
 
   <!-- Main Content Grid -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -76,77 +82,82 @@
     <!-- Quick Info -->
     <div class="lg:col-span-2 space-y-4">
       <!-- Tips Card -->
-      <div class="complexity-medium rounded-lg p-4" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
-        <div class="mb-4">
-          <h3 class="flex items-center gap-2 font-semibold">
-            <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">trending_up</mat-icon>
-            Dicas para Foco
-          </h3>
+      <section aria-labelledby="tips-heading">
+        <div class="complexity-medium rounded-lg p-4" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+          <div class="mb-4">
+            <h3 id="tips-heading" class="flex items-center gap-2 font-semibold">
+              <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'" aria-hidden="true">trending_up</mat-icon>
+              Dicas para Foco
+            </h3>
+          </div>
+          <ul class="space-y-2 text-sm" role="list">
+            <li class="flex items-start gap-2">
+              <span [style.color]="'var(--primary)'" aria-hidden="true">•</span>
+              <span>Divida tarefas grandes em etapas menores e mais gerenciáveis</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span [style.color]="'var(--primary)'" aria-hidden="true">•</span>
+              <span>Use o timer Pomodoro para manter sessões de foco efetivas</span>
+            </li>
+            <li class="complexity-complete flex items-start gap-2">
+              <span [style.color]="'var(--primary)'" aria-hidden="true">•</span>
+              <span>Faça pausas regulares para evitar sobrecarga cognitiva</span>
+            </li>
+            <li class="complexity-complete flex items-start gap-2">
+              <span [style.color]="'var(--primary)'" aria-hidden="true">•</span>
+              <span>Ative o Modo de Foco para reduzir distrações visuais</span>
+            </li>
+          </ul>
         </div>
-        <ul class="space-y-2 text-sm">
-          <li class="flex items-start gap-2">
-            <span [style.color]="'var(--primary)'">•</span>
-            <span>Divida tarefas grandes em etapas menores e mais gerenciáveis</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span [style.color]="'var(--primary)'">•</span>
-            <span>Use o timer Pomodoro para manter sessões de foco efetivas</span>
-          </li>
-          <li class="complexity-complete flex items-start gap-2">
-            <span [style.color]="'var(--primary)'">•</span>
-            <span>Faça pausas regulares para evitar sobrecarga cognitiva</span>
-          </li>
-          <li class="complexity-complete flex items-start gap-2">
-            <span [style.color]="'var(--primary)'">•</span>
-            <span>Ative o Modo de Foco para reduzir distrações visuais</span>
-          </li>
-        </ul>
-      </div>
+      </section>
 
       <!-- Upcoming Tasks -->
-      <div class="rounded-lg p-4" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
-        <div class="mb-4">
-          <h3 class="flex items-center gap-2 font-semibold">
-            <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'">schedule</mat-icon>
-            Próximas Tarefas
-          </h3>
+      <section aria-labelledby="upcoming-tasks-heading">
+        <div class="rounded-lg p-4" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" style="border: 1px solid">
+          <div class="mb-4">
+            <h3 id="upcoming-tasks-heading" class="flex items-center gap-2 font-semibold">
+              <mat-icon class="material-icons-rounded" [style.color]="'var(--primary)'" aria-hidden="true">schedule</mat-icon>
+              Próximas Tarefas
+            </h3>
           <p class="text-sm" [style.color]="'var(--muted-foreground)'">
             Tarefas que precisam da sua atenção
           </p>
         </div>
-        <div class="space-y-3">
-          <div *ngIf="upcomingTasks.length === 0" class="text-center py-12">
-            <mat-icon class="material-icons-rounded mb-3" [style.color]="'var(--muted-foreground)'" style="font-size: 48px; width: 48px; height: 48px;">task_alt</mat-icon>
-            <p class="font-medium" [style.color]="'var(--card-foreground)'">Nenhuma tarefa pendente</p>
-            <p class="text-sm mt-1" [style.color]="'var(--muted-foreground)'">Adicione novas tarefas na aba Tarefas</p>
-          </div>
-          <div *ngFor="let task of upcomingTasks" class="p-3 rounded-lg border" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'">
-            <div class="flex items-start justify-between gap-3 mb-2">
-              <div class="font-medium flex-1">{{ task.title }}</div>
-              <span class="text-xs px-2 py-1 rounded-full font-medium" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'">
-                {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
-              </span>
-            </div>
+          <div class="space-y-3" role="list" [attr.aria-label]="upcomingTasks.length > 0 ? upcomingTasks.length + ' tarefas pendentes' : 'Nenhuma tarefa pendente'">
+            <app-empty-state 
+              *ngIf="upcomingTasks.length === 0"
+              icon="task_alt"
+              title="Nenhuma tarefa pendente"
+              description="Adicione novas tarefas na aba Tarefas"
+            ></app-empty-state>
+            <article *ngFor="let task of upcomingTasks" class="p-3 rounded-lg border" [style.backgroundColor]="'var(--card)'" [style.borderColor]="'var(--border)'" role="listitem" [attr.aria-label]="'Tarefa: ' + task.title + ', Prioridade: ' + (task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta')">
+              <div class="flex items-start justify-between gap-3 mb-2">
+                <h4 class="font-medium flex-1">{{ task.title }}</h4>
+                <span class="text-xs px-2 py-1 rounded-full font-medium" [style.backgroundColor]="getPriorityColor(task.priority)" [style.color]="'white'" role="status" [attr.aria-label]="'Prioridade ' + (task.priority === 'low' ? 'baixa' : task.priority === 'medium' ? 'média' : 'alta')">
+                  {{ task.priority === 'low' ? 'Baixa' : task.priority === 'medium' ? 'Média' : 'Alta' }}
+                </span>
+              </div>
             <div *ngIf="task.description" class="detailed-info text-sm mb-3" [style.color]="'var(--muted-foreground)'">
               {{ task.description }}
             </div>
-            <div class="flex items-center gap-3 text-xs" [style.color]="'var(--muted-foreground)'">
-              <span *ngIf="task.estimatedTime" class="complexity-medium flex items-center gap-1">
-                <mat-icon class="material-icons-rounded" style="font-size: 14px; width: 14px; height: 14px;">schedule</mat-icon>
-                {{ task.estimatedTime }}min
-              </span>
-              <span *ngIf="task.subtasks?.length" class="detailed-info complexity-complete flex items-center gap-1">
-                <mat-icon class="material-icons-rounded" style="font-size: 14px; width: 14px; height: 14px;">checklist</mat-icon>
-                {{ getCompletedSubtasksCount(task.subtasks) }}/{{ task.subtasks.length }}
-              </span>
-              <span *ngIf="task.tags?.length" class="detailed-info complexity-complete flex items-center gap-1">
-                <mat-icon class="material-icons-rounded" style="font-size: 14px; width: 14px; height: 14px;">label</mat-icon>
-                {{ task.tags.length }}
-              </span>
-            </div>
+              <div class="flex items-center gap-3 text-xs" [style.color]="'var(--muted-foreground)'">
+                <span *ngIf="task.estimatedTime" class="complexity-medium flex items-center gap-1" [attr.aria-label]="'Tempo estimado: ' + task.estimatedTime + ' minutos'">
+                  <mat-icon class="material-icons-rounded" style="font-size: 14px; width: 14px; height: 14px;" aria-hidden="true">schedule</mat-icon>
+                  {{ task.estimatedTime }}min
+                </span>
+                <span *ngIf="task.subtasks?.length" class="detailed-info complexity-complete flex items-center gap-1" [attr.aria-label]="getCompletedSubtasksCount(task.subtasks) + ' de ' + task.subtasks.length + ' subtarefas concluídas'">
+                  <mat-icon class="material-icons-rounded" style="font-size: 14px; width: 14px; height: 14px;" aria-hidden="true">checklist</mat-icon>
+                  {{ getCompletedSubtasksCount(task.subtasks) }}/{{ task.subtasks.length }}
+                </span>
+                <span *ngIf="task.tags?.length" class="detailed-info complexity-complete flex items-center gap-1" [attr.aria-label]="task.tags.length + ' etiquetas'">
+                  <mat-icon class="material-icons-rounded" style="font-size: 14px; width: 14px; height: 14px;" aria-hidden="true">label</mat-icon>
+                  {{ task.tags.length }}
+                </span>
+              </div>
+            </article>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </div>

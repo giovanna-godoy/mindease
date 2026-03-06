@@ -10,8 +10,10 @@ import { AuthService } from './services/auth.service';
 import { FirebaseService } from './services/firebase.service';
 import { AccessibilityService } from './services/accessibility.service';
 import { CognitiveAlertsService } from './services/cognitive-alerts.service';
+import { KeyboardShortcutsService } from './services/keyboard-shortcuts.service';
 import { Observable } from 'rxjs';
 import { User } from 'firebase/auth';
+import './types/window.types';
 
 @Component({
   imports: [RouterModule, CommonModule, WelcomeDialogComponent, SidebarComponent, LoginComponent, NotificationComponent, LofiPlayerComponent],
@@ -27,16 +29,16 @@ export class App implements OnInit {
     private authService: AuthService,
     private firebaseService: FirebaseService,
     private accessibilityService: AccessibilityService,
-    private cognitiveAlertsService: CognitiveAlertsService
+    private cognitiveAlertsService: CognitiveAlertsService,
+    private keyboardShortcuts: KeyboardShortcutsService
   ) {
     this.currentUser$ = this.authService.currentUser$;
-    if (typeof window !== 'undefined') {
-      (window as any).firebaseService = this.firebaseService;
-      (window as any).accessibilityService = this.accessibilityService;
-      (window as any).cognitiveAlertsService = this.cognitiveAlertsService;
-    }
+    (window as any).firebaseService = this.firebaseService;
+    (window as any).accessibilityService = this.accessibilityService;
+    (window as any).cognitiveAlertsService = this.cognitiveAlertsService;
   }
 
   ngOnInit(): void {
+    this.keyboardShortcuts.init();
   }
 }

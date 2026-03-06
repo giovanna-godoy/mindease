@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { EmptyStateComponent } from './empty-state.component';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -37,7 +38,7 @@ interface UserProfile {
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, EmptyStateComponent],
   templateUrl: './user-profile.component.html',
 })
 export class UserProfileComponent implements OnInit {
@@ -65,6 +66,8 @@ export class UserProfileComponent implements OnInit {
   };
 
   newNeed = '';
+  isLoading = true;
+  isSaving = false;
   private subscription?: Subscription;
 
   commonNeeds = [
@@ -108,6 +111,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   async saveProfile(): Promise<void> {
+    this.isSaving = true;
     if (typeof window !== 'undefined') {
       const firebaseService = (window as any).firebaseService;
       if (firebaseService) {
@@ -122,6 +126,7 @@ export class UserProfileComponent implements OnInit {
         }
       }
     }
+    this.isSaving = false;
   }
 
   private showSuccessMessage(): void {
@@ -138,6 +143,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   async loadProfile(): Promise<void> {
+    this.isLoading = true;
     if (typeof window !== 'undefined') {
       const firebaseService = (window as any).firebaseService;
       if (firebaseService) {
@@ -157,6 +163,8 @@ export class UserProfileComponent implements OnInit {
         }
       }
     }
+    this.isLoading = false;
+    this.cdr.detectChanges();
   }
 
 

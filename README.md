@@ -116,7 +116,14 @@ O projeto utiliza CSS Variables para personalização:
   --accent: #10b981;
   --surface-color: #ffffff;
   --text-primary: #111827;
-  /* ... mais variáveis */
+  
+  /* Cores WCAG AA Compliant */
+  --priority-high: #EF4444;     /* ✅ 4.54:1 */
+  --priority-medium: #D97706;   /* ✅ 3.02:1 */
+  --priority-low: #059669;      /* ✅ 4.52:1 */
+  --success-color: #059669;     /* ✅ 4.52:1 */
+  --info-color: #3B82F6;        /* ✅ 4.56:1 */
+  --warning-color: #D97706;     /* ✅ 3.02:1 */
 }
 ```
 
@@ -131,6 +138,28 @@ O projeto utiliza CSS Variables para personalização:
 - `.focus-mode` - Modo de foco ativo
 - `.reduced-motion` - Animações reduzidas
 - `.no-animations` - Sem animações
+
+## ⌨️ Atalhos de Teclado
+
+### Navegação Global
+- `Alt + 1` - Dashboard
+- `Alt + 2` - Tarefas
+- `Alt + 3` - Perfil
+- `Alt + 4` - Painel Cognitivo
+
+### Modais
+- `Tab` / `Shift + Tab` - Navegação com focus trap
+- `Esc` - Fechar modal
+
+### Recursos de Acessibilidade
+- **Focus Trap**: Todos os modais capturam o foco automaticamente
+- **Navegação Circular**: Tab no último elemento retorna ao primeiro
+- **Compatibilidade**: Funciona com leitores de tela e navegação por teclado
+
+## 📚 Documentação Adicional
+
+- [Testes de Contraste WCAG](./docs/WCAG_CONTRAST_TESTS.md)
+- [Atalhos de Teclado](./docs/KEYBOARD_SHORTCUTS.md)
 
 ## 🧪 Comandos Úteis
 

@@ -1,93 +1,60 @@
 <div class="login-container">
   <div class="login-card">
-    <!-- Logo e Header -->
-    <div class="login-header">
+    <header class="login-header">
       <div class="logo">
-        <mat-icon class="logo-icon">psychology</mat-icon>
+        <mat-icon class="logo-icon" aria-hidden="true">psychology</mat-icon>
         <h1>MindEase</h1>
       </div>
       <p>Sua plataforma de estudos acessível</p>
       <h2>{{ isLoginMode ? 'Entrar na sua conta' : 'Criar conta' }}</h2>
-    </div>
+    </header>
 
-    <!-- Formulário -->
-    <form (ngSubmit)="onSubmit()" class="login-form">
-      <!-- Campo Nome (apenas no registro) -->
+    <form (ngSubmit)="onSubmit()" class="login-form" aria-label="{{ isLoginMode ? 'Formulário de login' : 'Formulário de registro' }}">
       <div *ngIf="!isLoginMode" class="form-group">
         <label for="name">
-          <mat-icon>person</mat-icon>
+          <mat-icon aria-hidden="true">person</mat-icon>
           Nome *
         </label>
-        <input
-          id="name"
-          type="text"
-          [(ngModel)]="name"
-          name="name"
-          required
-          class="form-input"
-          placeholder="Seu nome completo"
-        />
+        <input id="name" type="text" [(ngModel)]="name" name="name" required class="form-input" placeholder="Seu nome completo" aria-required="true" />
       </div>
 
       <div class="form-group">
         <label for="email">
-          <mat-icon>mail</mat-icon>
+          <mat-icon aria-hidden="true">mail</mat-icon>
           E-mail *
         </label>
-        <input
-          id="email"
-          type="email"
-          [(ngModel)]="email"
-          name="email"
-          required
-          class="form-input"
-          placeholder="seu.email@fiap.com.br"
-          [class.error]="errorMessage && !email"
-        />
+        <input id="email" type="email" [(ngModel)]="email" name="email" required class="form-input" placeholder="seu.email@fiap.com.br" [class.error]="errorMessage && !email" aria-required="true" [attr.aria-invalid]="errorMessage && !email" />
       </div>
 
       <div class="form-group">
         <label for="password">
-          <mat-icon>lock</mat-icon>
+          <mat-icon aria-hidden="true">lock</mat-icon>
           Senha *
         </label>
-        <input
-          id="password"
-          type="password"
-          [(ngModel)]="password"
-          name="password"
-          required
-          class="form-input"
-          placeholder="Digite sua senha"
-          [class.error]="errorMessage && !password"
-        />
+        <input id="password" type="password" [(ngModel)]="password" name="password" required class="form-input" placeholder="Digite sua senha" [class.error]="errorMessage && !password" aria-required="true" [attr.aria-invalid]="errorMessage && !password" />
       </div>
 
-      <!-- Mensagem de erro -->
-      <div *ngIf="errorMessage" class="error-message">
-        <mat-icon>error</mat-icon>
+      <div *ngIf="errorMessage" class="error-message" role="alert" aria-live="assertive">
+        <mat-icon aria-hidden="true">error</mat-icon>
         {{ errorMessage }}
       </div>
 
-      <!-- Botão principal -->
-      <button type="submit" class="btn-primary" [disabled]="isLoading">
-        <mat-icon *ngIf="isLoading" class="loading-icon">hourglass_empty</mat-icon>
-        <mat-icon *ngIf="!isLoading && isLoginMode">arrow_forward</mat-icon>
-        <mat-icon *ngIf="!isLoading && !isLoginMode">person_add</mat-icon>
+      <button type="submit" class="btn-primary" [disabled]="isLoading" [attr.aria-busy]="isLoading">
+        <mat-icon *ngIf="isLoading" class="loading-icon" aria-hidden="true">hourglass_empty</mat-icon>
+        <mat-icon *ngIf="!isLoading && isLoginMode" aria-hidden="true">arrow_forward</mat-icon>
+        <mat-icon *ngIf="!isLoading && !isLoginMode" aria-hidden="true">person_add</mat-icon>
         <span>{{ isLoading ? 'Processando...' : (isLoginMode ? 'Entrar' : 'Criar conta') }}</span>
       </button>
 
-      <!-- Divider -->
-      <div class="divider">
+      <div class="divider" aria-hidden="true">
         <span>ou</span>
       </div>
 
-      <!-- Botão secundário -->
       <div class="text-center text-sm">
         <span [style.color]="'var(--muted-foreground)'">
           {{ isLoginMode ? 'Não tem uma conta?' : 'Já tem uma conta?' }}
         </span>
-        <button type="button" (click)="toggleMode()" class="ml-1 font-medium" [style.color]="'#9f7aea'" style="background: none; border: none; text-decoration: underline;">
+        <button type="button" (click)="toggleMode()" class="ml-1 font-medium" [style.color]="'#9f7aea'" style="background: none; border: none; text-decoration: underline;" [attr.aria-label]="isLoginMode ? 'Ir para criar conta' : 'Ir para fazer login'">
           {{ isLoginMode ? 'Criar conta' : 'Fazer login' }}
         </button>
       </div>

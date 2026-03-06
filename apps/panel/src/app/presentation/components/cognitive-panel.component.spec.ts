@@ -16,13 +16,13 @@ describe('CognitivePanelComponent', () => {
     (global as any).window = (global as any).window || {};
   });
 
-  test('updateSettings merges and triggers save and show', () => {
+  test('updateSettings merges and triggers save', () => {
     comp.saveSettings = jest.fn();
-    (comp as any).showSuccessMessage = jest.fn();
+    (comp as any).applySettings = jest.fn();
     comp.updateSettings({ contrastLevel: 'high' });
     expect(comp.settings.contrastLevel).toBe('high');
+    expect((comp as any).applySettings).toHaveBeenCalled();
     expect(comp.saveSettings).toHaveBeenCalled();
-    expect((comp as any).showSuccessMessage).toHaveBeenCalled();
   });
 
   test('setSpacing calls accessibility service when present', () => {

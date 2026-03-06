@@ -3,24 +3,15 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { StatsCardComponent } from './stats-card.component';
 import { PomodoroTimerComponent } from './pomodoro-timer.component';
+import { EmptyStateComponent } from './empty-state.component';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription, interval } from 'rxjs';
-
-export interface Task {
-  id: string;
-  title: string;
-  description: string;
-  status: 'todo' | 'in_progress' | 'done';
-  priority: 'low' | 'medium' | 'high';
-  estimatedTime: number;
-  subtasks: any[];
-  tags: string[];
-}
+import { Task, Subtask } from '../../types/task.types';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatIconModule, StatsCardComponent, PomodoroTimerComponent],
+  imports: [CommonModule, MatIconModule, StatsCardComponent, PomodoroTimerComponent, EmptyStateComponent],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit, OnDestroy {
@@ -66,22 +57,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   async loadTasks(): Promise<void> {
-    if (typeof window !== 'undefined') {
-      const firebaseService = (window as any).firebaseService;
-      if (firebaseService) {
-        const user = await firebaseService.waitForUser();
-        if (user) {
-          try {
-            const tasks = await firebaseService.getUserTasks(user.uid);
-            this.allTasks = tasks;
-            this.calculateStats();
-            this.upcomingTasks = tasks
-              .filter((task: Task) => task.status === 'in_progress')
-              .slice(0, 5);
-            this.cdr.detectChanges();
-          } catch (error) {
-            this.resetStats();
-          }
+    const firebaseService = (window as any).firebaseService;
+    if (firebaseService) {
+      const user = await firebaseService.waitForUser();
+      if (user) {
+        try {
+          const tasks = await firebaseService.getUserTasks(user.uid);
+          this.allTasks = tasks;
+          this.calculateStats();
+          this.upcomingTasks = tasks
+            .filter((task: Task) => task.status === 'in_progress')
+            .slice(0, 5);
+          this.cdr.detectChanges();
+        } catch (error) {
+          this.resetStats();
         }
       }
     }
@@ -110,18 +99,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   getPriorityColor(priority: string): string {
     switch (priority) {
       case 'high':
-        return '#EF4444';
+        return 'var(--priority-high)';
       case 'medium':
-        return '#F59E0B';
+        return 'var(--priority-medium)';
       case 'low':
-        return '#3B82F6';
+        return 'var(--priority-low)';
       default:
         return '#6B7280';
     }
   }
 
-  getCompletedSubtasksCount(subtasks: any[]): number {
-    return subtasks?.filter(s => s.completed).length || 0;
+  getCompletedSubtasksCount(subtasks: Subtask[]): number {
+    return subtasks.filter(s => s.completed).length;
   }
 
   testNotification(type: 'info' | 'success' | 'warning' | 'transition'): void {

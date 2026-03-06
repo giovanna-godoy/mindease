@@ -5,29 +5,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
-
-interface Subtask {
-  id: string;
-  title: string;
-  completed: boolean;
-}
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  status: 'todo' | 'in_progress' | 'done';
-  priority: 'low' | 'medium' | 'high';
-  estimatedTime: number;
-  subtasks: Subtask[];
-  tags: string[];
-}
+import { FocusTrapDirective } from '../../directives/focus-trap.directive';
+import { Task, Subtask, TaskStatus, TaskPriority } from '../../types/task.types';
 
 interface TaskFormData {
   title: string;
   description: string;
-  status: 'todo' | 'in_progress' | 'done';
-  priority: 'low' | 'medium' | 'high';
+  status: TaskStatus;
+  priority: TaskPriority;
   estimatedTime: number;
   estimatedMinutes?: number;
   dueDate?: string;
@@ -38,14 +23,14 @@ interface TaskFormData {
 @Component({
   selector: 'app-task-form-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, MatDatepickerModule, MatInputModule, MatNativeDateModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatDatepickerModule, MatInputModule, MatNativeDateModule, FocusTrapDirective],
   templateUrl: './task-form-dialog.component.html',
   styleUrl: './task-form-dialog.component.css'
 })
 export class TaskFormDialogComponent implements OnChanges {
   @Input() isOpen = false;
   @Input() task: Task | null = null;
-  @Input() defaultStatus: 'todo' | 'in_progress' | 'done' = 'todo';
+  @Input() defaultStatus: TaskStatus = 'todo';
   
   @Output() openChange = new EventEmitter<boolean>();
   @Output() taskSubmit = new EventEmitter<TaskFormData>();

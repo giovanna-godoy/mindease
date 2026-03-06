@@ -1,4 +1,4 @@
-<div class="notification-container">
+<div class="notification-container" role="region" aria-label="Notificações" aria-live="polite">
   <div 
     *ngFor="let notification of notifications" 
     class="notification"
@@ -6,13 +6,15 @@
     [class.notification-success]="notification.type === 'success'"
     [class.notification-warning]="notification.type === 'warning'"
     [class.notification-transition]="notification.type === 'transition'"
+    role="alert"
+    [attr.aria-label]="notification.message"
   >
-    <mat-icon class="notification-icon" [style.color]="getIconColor(notification.type)">
+    <mat-icon class="notification-icon" [style.color]="getIconColor(notification.type)" aria-hidden="true">
       {{ getIcon(notification.type) }}
     </mat-icon>
     <p class="notification-message">{{ notification.message }}</p>
-    <button (click)="removeNotification(notification.id)" class="notification-close">
-      <mat-icon style="font-size: 18px;">close</mat-icon>
+    <button (click)="removeNotification(notification.id)" class="notification-close" aria-label="Fechar notificação">
+      <mat-icon style="font-size: 18px;" aria-hidden="true">close</mat-icon>
     </button>
   </div>
 </div>
